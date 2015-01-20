@@ -1,31 +1,28 @@
 var express = require('express');
     path = require('path'),
+    appRoot = global.appRoot = path.resolve(__dirname),
 
     favicon = require('serve-favicon'),
 
     winston = require('winston'),
-    logger = new (winston.Logger)({ transports: [ new (winston.transports.Console)({colorize:true}) ] }),
-    cookieParser = require('cookie-parser'),
-    bodyParser = require('body-parser'),
+    logger = require(path.resolve(appRoot, 'libs/logger')),
+
+    config = require(path.resolve(appRoot, 'libs/config')),
 
     mongoose = require('mongoose'),
 
-    index = require('./routes/index'),
-    json_api = require('./routes/json_api'),
+    cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser'),
+
+    index = require(path.resolve(appRoot, 'routes/index')),
+    json_api = require(path.resolve(appRoot, 'routes/json_api')),
 
     app = express();
 
 app.use(require('winston-request-logger').create(logger));
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
 //DB connection
-mongoose.connect('mongodb://localhost/todo', function(err) {
+mongoose.connect(config.get('mongoose:uri'), function(err) {
 
     if (err) {
         logger.log('error', 'mongodb connection error', err);
@@ -34,6 +31,14 @@ mongoose.connect('mongodb://localhost/todo', function(err) {
     }
 
 });
+
+
+// uncomment after placing your favicon in /public
+//app.use(favicon(__dirname + '/public/favicon.ico'));
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 
 app.use(bodyParser.json());

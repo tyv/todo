@@ -1,8 +1,7 @@
 var express = require('express'),
-    router = express.Router();
-
-    mongoose = require('mongoose'),
-    Todo = require('../mongo-models/Todo.js');
+    router = express.Router(),
+    path = require('path'),
+    Todo = require(path.resolve(global.appRoot, 'libs/TodoSchema'));
 
 // GET
 router.get('/', function(req, res, next) {
