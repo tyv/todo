@@ -16,7 +16,6 @@ router.post('/', function(req, res, next) {
     passport.authenticate('local',
         function(err, user, info) {
 
-            logger.info('11111');
             logger.info('user:', user);
 
             if (err) next(err);
@@ -26,7 +25,7 @@ router.post('/', function(req, res, next) {
                 req.logIn(user, function(err) {
 
                   if (err) next(err);
-                  res.json(res);
+                  res.end();
 
                 });
 
@@ -34,7 +33,7 @@ router.post('/', function(req, res, next) {
                 next(err);
             }
         }
-    )(req, res, next)
+    )(req, res, next);
 });
 
 
@@ -44,10 +43,10 @@ router.post('/', function(req, res, next) {
 */
 router.post('/register', function(req, res, next) {
 
-    var user = new User({ username: req.body.email, password: req.body.password });
+    var user = new User({ username: req.body.username, password: req.body.password });
 
     logger.info('Register attempt');
-    logger.info('user:', req.body.email);
+    logger.info('user:', req.body.username);
 
     user.save(function(err, user) {
 

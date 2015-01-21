@@ -65,7 +65,7 @@ app.use(passport.session());
 
 
   passport.use(new LocalStrategy({
-    usernameField: 'email',
+    usernameField: 'username',
     passwordField: 'password'
   }, function(username, password, done) {
 
@@ -103,8 +103,6 @@ app.use(passport.session());
     });
 
   });
-
-
 
 app.use(express.static(path.join(__dirname, 'public')));
 
