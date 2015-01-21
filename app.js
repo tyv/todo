@@ -14,8 +14,16 @@ var express = require('express');
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
 
+    passport = require('passport'),
+
     index = require(path.resolve(appRoot, 'routes/index')),
     json_api = require(path.resolve(appRoot, 'routes/json_api')),
+    passport_api = require(path.resolve(appRoot, 'routes/passport')),
+
+    session = require('express-session'),
+
+    LocalStrategy  = require('passport-local').Strategy,
+    User = require(path.resolve(global.appRoot, 'libs/UserSchema')),
 
     app = express();
 
@@ -25,9 +33,9 @@ app.use(require('winston-request-logger').create(logger));
 mongoose.connect(config.get('mongoose:uri'), function(err) {
 
     if (err) {
-        logger.log('error', 'mongodb connection error', err);
+        logger.error('mongodb connection error', err);
     } else {
-        logger.log('info', 'successfull mongodb connection');
+        logger.info('successfull mongodb connection');
     }
 
 });
@@ -44,12 +52,66 @@ app.set('view engine', 'jade');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+        secret: 'SECRET',
+        resave: false,
+        saveUninitialized: true
+    }));
+
+//Passport
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+  passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+  }, function(username, password, done) {
+
+    User.findOne({ username : username }, function(err, user) {
+
+        if (err) done(err);
+
+        if (user) {
+
+            password === user.password ?
+              done(null, user) :
+              done(null, false, { message: 'Incorrect password.' });
+
+        } else {
+
+            done(null, false, { message: 'Incorrect username.' });
+
+        }
+    });
+  }));
+
+
+  passport.serializeUser(function(user, done) {
+    done(null, user.id);
+  });
+
+
+  passport.deserializeUser(function(id, done) {
+
+    User.findById(id, function(err, user) {
+
+      if (err) return done(err);
+      done(null, user);
+
+    });
+
+  });
+
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/', index);
 app.use('/todo', json_api);
+app.use('/passport', passport_api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
