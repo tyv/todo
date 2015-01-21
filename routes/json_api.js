@@ -13,7 +13,7 @@ router.all('/', mustAuthenticated);
 */
 router.get('/', function(req, res, next) {
 
-    Todo.find(function (err, todos) {
+    Todo.find({ author: req.user.username }, function (err, todos) {
 
         if (err) return next(err);
         res.json(todos);
