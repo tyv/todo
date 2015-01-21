@@ -16,7 +16,7 @@ router.post('/', function(req, res, next) {
     passport.authenticate('local',
         function(err, user, info) {
 
-            logger.info('user:', user);
+            logger.info('user:', req.body.username);
 
             if (err) next(err);
 
@@ -58,7 +58,5 @@ router.post('/register', function(req, res, next) {
         });
     });
 });
-
-
 
 module.exports = router;

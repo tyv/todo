@@ -1,7 +1,11 @@
 var express = require('express'),
     router = express.Router(),
     path = require('path'),
+    mustAuthenticated = require(path.resolve(global.appRoot, 'libs/must-authenticated')),
     Todo = require(path.resolve(global.appRoot, 'libs/TodoSchema'));
+
+
+router.all('/', mustAuthenticated);
 
 /*
     GET
