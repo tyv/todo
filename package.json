@@ -22,5 +22,8 @@
     "serve-favicon": "~2.2.0",
     "winston": "^0.8.3",
     "winston-request-logger": "^1.0.7"
+  },
+  "devDependencies": {
+    "riot": "^2.0.1"
   }
 }
