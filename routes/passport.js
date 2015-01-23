@@ -18,7 +18,7 @@ router.post('/', function(req, res, next) {
 
             logger.info('user:', req.body.username);
 
-            if (err) next(err);
+            if (err) res.end();
 
             if (user) {
 
@@ -30,7 +30,7 @@ router.post('/', function(req, res, next) {
                 });
 
             } else {
-                next(err);
+                res.end();
             }
         }
     )(req, res, next);

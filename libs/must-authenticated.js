@@ -1,5 +1,5 @@
 module.exports = function (req, res, next){
   req.isAuthenticated()
     ? next()
-    : res.end('401');
+    : res.status(401).end();
 };
