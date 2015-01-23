@@ -28,13 +28,16 @@ riot.tag('login-form', '<form id="login" onsubmit="{ submit }" name="login" acti
             .fail(this.onLoginFail.bind(this));
     }.bind(this)
 
-  this.onLogin = function() {
-        console.log('done');
+  this.onLogin = function(data) {
+        riot.mount('todo-app', { todo: data });
+        $(this.root).remove();
     }.bind(this)
 
   this.onLoginFail = function(e) {
         console.log('fail', e);
     }.bind(this)
+
+
 
 
 })

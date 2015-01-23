@@ -54,14 +54,14 @@
             .fail(this.onLoginFail.bind(this));
     }
 
-    onLogin() {
-        console.log('done');
+    onLogin(data) {
+        riot.mount('todo-app', { todo: data });
+        $(this.root).remove();
     }
 
     onLoginFail(e) {
         console.log('fail', e);
     }
-
 
 </login-form>
 

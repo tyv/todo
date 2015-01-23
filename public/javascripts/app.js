@@ -1,9 +1,13 @@
 (function($, window, riot) {
 
-    riot.mount('login-form', {
-        host: 'http://localhost:3000/',
-        login: 'passport',
-        register: 'passport/register'
-    });
+    $.get('/todo')
+        .done(function(data) {
+            riot.mount('todo-app', { todo: data });
+            console.log(data);
+        })
+        .fail(function() {
+            console.log('fail');
+            riot.mount('login-form');
+        });
 
 })(jQuery, window, riot);
