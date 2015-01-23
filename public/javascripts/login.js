@@ -1,4 +1,4 @@
-riot.tag('login-form', '<form name="login"> <fieldset title="Login"> <chooser fields="{ fields }"></chooser> <input placeholder="login"> <input type="password" placeholder="password"> <div class="submit"> <input type="submit" value="{ fields[0].checked ? fields[0].value : fields[1].value}"> </div> </fieldset> </form>', function(opts) {
+riot.tag('login-form', '<form id="login" onsubmit="{ submit }" name="login" action="/123" __disabled="{ disabled }"> <ul> <li each="{ fields }"> <label> <input onclick="{ parent.toggle }" type="radio" name="{ value.toLowerCase() }" __checked="{ checked }" __disabled="{ parent.disabled }" > { value } </label> </li> </ul> <input name="username" placeholder="login" __disabled="{ disabled }" required> <input type="password" name="password" placeholder="password" __disabled="{ disabled }" required> <div class="submit"> <button type="submit" __disabled="{ disabled }">{fields[0].checked ? fields[0].value : fields[1].value}</button> <button type="reset" __disabled="{ disabled }">Clear</button> </div> </form>', function(opts) {
     this.fields = [{
         value: 'Login',
         checked: true
@@ -6,23 +6,36 @@ riot.tag('login-form', '<form name="login"> <fieldset title="Login"> <chooser fi
         value: 'Register'
     }];
 
-})
+  this.toggle = function() {
 
-riot.tag('chooser', '<ul> <li each="{ fields }"> <label> <input onclick="{ parent.toggle }" type="radio" name="chooser" __checked="{ checked }"> { value } </label> </li> </ul>', function(opts) {
-    var parent = this.parent;
-
-    this.fields = opts.fields;
-
-    this.toggle = function() {
-
-        opts.fields.forEach(function(field) {
+        this.fields.forEach(function(field) {
             field.checked = !field.checked;
-
         });
 
-        parent.update();
-
         return true;
-    }
+    }.bind(this)
+
+
+  this.submit = function(e) {
+        var url = '/passport';
+
+        if (this.fields[1].checked) url += '/register';
+
+        this.disabled = true;
+
+        $.post(url, $(this.login).serialize())
+            .done(this.onLogin.bind(this))
+            .fail(this.onLoginFail.bind(this));
+    }.bind(this)
+
+  this.onLogin = function() {
+        console.log('done');
+    }.bind(this)
+
+  this.onLoginFail = function(e) {
+        console.log('fail', e);
+    }.bind(this)
+
 
 })
+

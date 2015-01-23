@@ -54,7 +54,7 @@ router.post('/register', function(req, res, next) {
 
         req.login(user, function(err, user) {
             if (err) next(err);
-            res.json(user);
+            res.end();
         });
     });
 });
