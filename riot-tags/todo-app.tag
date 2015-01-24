@@ -1,16 +1,14 @@
 <todo-app class={ block }>
 
-    <div class="add">
-
+    <form onsubmit={ add } class="add">
         <div class="add__left">
-            <input class="add__input" name="add">
+            <input name="add__input" class="add__input" required>
         </div>
 
         <div class="add__right">
-            <button class="add__submit">Add Todo</button>
+            <button type="submit" name="add_submit" class="add__submit">Add Todo</button>
         </div>
-
-    </div>
+    </form>
 
     <ul class={ block + '__list' } if={ todos.length }>
         <li class={ block + '__item' } each={ todos }>
@@ -34,6 +32,32 @@
     this.undone = this.getUndone();
 
     function initFunctions() {
+
+        this.add = function() {
+             //TODO fix 'author'
+            var that = this,
+                data = {
+                    name: this.add__input.value,
+                    author: 'tyv',
+                    updated: Date.now()
+                };
+
+            $.post('/todo', data)
+                .done(function(data) {
+                    console.log('done: ', data);
+                    that.onAddTodoSuccess(data);
+
+                })
+                .fail(function(e) { console.log('fail: ', e) });
+        }
+
+        this.onAddTodoSuccess = function(data) {
+
+            this.todos.push(data);
+            this.undone = this.getUndone();
+            this.update();
+
+        }
 
         this.markAllComplete = function() {
             this.todos.forEach(function(todo) {
@@ -62,7 +86,7 @@
                     break;
 
                 default:
-                    leftString = undoneLength + ' ' + leftString.replace('&', 's');
+                    leftString = leftString.replace('%', undoneLength).replace('&', 's');
             }
 
             return leftString;
