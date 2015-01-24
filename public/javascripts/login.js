@@ -37,8 +37,5 @@ riot.tag('login-form', '<form id="login" onsubmit="{ submit }" name="login" acti
         console.log('fail', e);
     }.bind(this)
 
-
-
-
 })
 

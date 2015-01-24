@@ -2,7 +2,8 @@
 
     $.get('/todo')
         .done(function(data) {
-            riot.mount('todo-app', { todo: data });
+            console.log(data)
+            riot.mount('todo-app', { todos: data });
             console.log(data);
         })
         .fail(function() {
