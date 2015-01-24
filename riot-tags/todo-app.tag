@@ -23,32 +23,53 @@
             <li class={ block + '__info' }>
                 { getLeftString() }
             </li>
-            <li><a href="">Mark all as complete</a></li>
+            <li><a class={ disabled: !undone.length } onclick={ markAllComplete } href="">Mark all as complete</a></li>
         </ul>
     </div>
 
+    var that = initFunctions.call(this);
+
     this.block = 'todo-app';
     this.todos = opts.todos;
-    this.undone = this.todos.filter(function(todo) { return !todo.completed });
+    this.undone = this.getUndone();
 
-    getLeftString() {
-        var leftString = '% item& left';
-            undoneLength = this.undone.length;
+    function initFunctions() {
 
-        switch(undoneLength) {
-            case 0:
-                leftString = 'All done';
-                break;
-
-            case 1:
-                leftString = leftString.replace('%', '1').replace('&', '');
-                break;
-
-            default:
-                leftString = undoneLength + ' ' + leftString.replace('&', 's');
+        this.markAllComplete = function() {
+            this.todos.forEach(function(todo) {
+                todo.completed = true;
+            });
+            this.undone = this.getUndone();
         }
 
-        return leftString;
-    }
+        this.getUndone = function() {
+            return this.todos.filter(function(todo) {
+                return !todo.completed
+            });
+        }
+
+        this.getLeftString = function() {
+            var leftString = '% item& left';
+                undoneLength = this.undone.length;
+
+            switch(undoneLength) {
+                case 0:
+                    leftString = 'All done';
+                    break;
+
+                case 1:
+                    leftString = leftString.replace('%', '1').replace('&', '');
+                    break;
+
+                default:
+                    leftString = undoneLength + ' ' + leftString.replace('&', 's');
+            }
+
+            return leftString;
+        }
+
+        return this;
+
+    };
 
 </todo-app>
