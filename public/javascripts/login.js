@@ -29,8 +29,14 @@ riot.tag('login-form', '<form id="login" onsubmit="{ submit }" name="login" acti
     }.bind(this)
 
   this.onLogin = function(data) {
-        riot.mount('todo-app', { todo: data });
-        $(this.root).remove();
+        getTodos()
+            .done(function(data) {
+                riot.mount('todo-app', { todos: data });
+                $(this.root).remove();
+            }.bind(this))
+            .fail(function() {
+                conole.log('data retirieve fail');
+            })
     }.bind(this)
 
   this.onLoginFail = function(e) {

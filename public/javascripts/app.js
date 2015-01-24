@@ -1,14 +1,16 @@
-(function($, window, riot) {
+// TODO: use module system instead global scope
+getTodos()
+    .done(function(data) {
+        console.log(data);
+        riot.mount('todo-app', { todos: data });
+    })
+    .fail(function() {
+        console.log('fail');
+        riot.mount('login-form');
+    });
 
-    $.get('/todo')
-        .done(function(data) {
-            console.log(data)
-            riot.mount('todo-app', { todos: data });
-            console.log(data);
-        })
-        .fail(function() {
-            console.log('fail');
-            riot.mount('login-form');
-        });
 
-})(jQuery, window, riot);
+
+function getTodos() {
+    return $.get('/todo');
+}

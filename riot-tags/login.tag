@@ -55,8 +55,14 @@
     }
 
     onLogin(data) {
-        riot.mount('todo-app', { todo: data });
-        $(this.root).remove();
+        getTodos()
+            .done(function(data) {
+                riot.mount('todo-app', { todos: data });
+                $(this.root).remove();
+            }.bind(this))
+            .fail(function() {
+                conole.log('data retirieve fail');
+            })
     }
 
     onLoginFail(e) {

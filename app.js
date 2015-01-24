@@ -55,6 +55,7 @@ app.use(cookieParser());
 app.use(session({
         secret: 'SECRET',
         resave: false,
+        cookie:  getCookieProps(),
         saveUninitialized: true
     }));
 
@@ -117,6 +118,19 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
+
+// Cookie props
+function getCookieProps() {
+
+    var expires = new Date()
+        expires.setMonth(expires.getMonth() + 1),
+        maxAge = 3600000 * 24 * 30;  // month
+
+    return {
+        expires: expires,
+        maxAge: maxAge
+    };
+};
 
 // error handlers
 
