@@ -25,7 +25,9 @@ router.post('/', function(req, res, next) {
                 req.logIn(user, function(err) {
 
                   if (err) next(err);
-                  res.end();
+                  res
+                    .cookie('username', user.username)
+                    .end(user.username);
 
                 });
 
@@ -52,9 +54,11 @@ router.post('/register', function(req, res, next) {
 
         if (err) next(err);
 
-        req.login(user, function(err, user) {
+        req.login(user, function(err) {
             if (err) next(err);
-            res.end();
+            res
+                .cookie('username', req.body.username)
+                .end(req.body.username);
         });
     });
 });

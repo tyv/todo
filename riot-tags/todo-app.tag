@@ -12,7 +12,14 @@
 
     <ul class={ block + '__list' } if={ todos.length }>
         <li class={ block + '__item' } each={ todos }>
-            <label><input class="checkbox" type="checkbox" checked={ completed }>{ name }</label>
+            <label>
+                <input
+                        onchange={ parent.toggle }
+                        class="checkbox"
+                        type="checkbox"
+                        checked={ completed }>{ name }
+            </label>
+            <a onclick={ parent.delete } href>×</a>
         </li>
     </ul>
 
@@ -29,7 +36,7 @@
 
     this.block = 'todo-app';
     this.todos = opts.todos;
-    this.undone = this.getUndone();
+    this.getUndone();
 
     function initFunctions() {
 
@@ -38,36 +45,103 @@
             var that = this,
                 data = {
                     name: this.add__input.value,
-                    author: 'tyv',
+                    author: globalData.login,
                     updated: Date.now()
                 };
 
-            $.post('/todo', data)
-                .done(function(data) {
-                    console.log('done: ', data);
-                    that.onAddTodoSuccess(data);
+            TodoAPI
+                .addTodo(data)
+                    .done(function(data) {
+                        console.log('done: ', data);
+                        that.onAddTodoSuccess(data);
 
-                })
-                .fail(function(e) { console.log('fail: ', e) });
+                    })
+                    .fail(function(e) {
+                        console.log('fail: ', e)
+                    });
         }
 
         this.onAddTodoSuccess = function(data) {
 
             this.todos.push(data);
-            this.undone = this.getUndone();
+            this.getUndone();
             this.update();
 
         }
 
         this.markAllComplete = function() {
-            this.todos.forEach(function(todo) {
-                todo.completed = true;
-            });
-            this.undone = this.getUndone();
+
+            var that = this,
+                todos = this.todos.map(function(todo) {
+                            todo.completed = true;
+                            return todo;
+                        });
+
+            TodoAPI
+                .updateTodos(todos)
+                .done(function(todos) { that.markAllCompleteSuccess(todos) })
+                .fail(function(e) { that.markAllCompleteFail(e) })
+
+        }
+
+        this.markAllCompleteSuccess = function(todos) {
+            this.todos = todos;
+            this.getUndone();
+        }
+
+        this.markAllCompleteFail = function(e) {
+            console.log('error bulk change', e);
+        }
+
+        this.toggle = function(e) {
+
+            var that = this.parent,
+                todo = $.extend({}, e.item);
+
+            todo.completed = !todo.completed;
+
+            TodoAPI
+                .updateTodo(todo)
+                .done(function(todo) {
+                    that.toggleSuccess(todo, e.item)
+                })
+                .fail(function(e) {
+                    that.toggleFail(e)
+                })
+        }
+
+        this.toggleSuccess = function(todo, item) {
+            item.completed = todo.completed;
+        }
+
+        this.toggleFail = function(e) {
+            console.log('toggle fail: ', e);
+        }
+
+        this.delete = function(e) {
+
+            TodoAPI
+                .deleteTodo(e.item._id)
+                .done(function() {
+                    that.deleteSuccess(e.item)
+                })
+                .fail(function(e) {
+                    that.deleteFail(e)
+                })
+        }
+
+        this.deleteSuccess = function(item) {
+            this.todos.splice(this.todos.indexOf(item), 1);
+            this.getUndone();
+            this.update();
+        }
+
+        this.deleteFail = function(e) {
+            console.log('delete fail: ', e);
         }
 
         this.getUndone = function() {
-            return this.todos.filter(function(todo) {
+            this.undone = this.todos.filter(function(todo) {
                 return !todo.completed
             });
         }

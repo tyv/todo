@@ -28,15 +28,19 @@ riot.tag('login-form', '<form id="login" onsubmit="{ submit }" name="login" acti
             .fail(this.onLoginFail.bind(this));
     }.bind(this)
 
-  this.onLogin = function(data) {
-        getTodos()
-            .done(function(data) {
-                riot.mount('todo-app', { todos: data });
-                $(this.root).remove();
-            }.bind(this))
-            .fail(function() {
-                conole.log('data retirieve fail');
-            })
+  this.onLogin = function(username) {
+
+        globalData.login = username;
+
+        TodoAPI
+            .getTodos()
+                .done(function(todos) {
+                    riot.mount('todo-app', { todos: todos });
+                    $(this.root).remove();
+                }.bind(this))
+                .fail(function() {
+                    conole.log('data retirieve fail');
+                })
     }.bind(this)
 
   this.onLoginFail = function(e) {

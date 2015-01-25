@@ -1,9 +1,9 @@
-riot.tag('todo-app', '<form onsubmit="{ add }" class="add"> <div class="add__left"> <input name="add__input" class="add__input" required> </div> <div class="add__right"> <button type="submit" name="add_submit" class="add__submit">Add Todo</button> </div> </form> <ul class="{ block + \'__list\' }" if="{ todos.length }"> <li class="{ block + \'__item\' }" each="{ todos }"> <label><input class="checkbox" type="checkbox" __checked="{ completed }">{ name }</label> </li> </ul> <div class="{ block + \'__foot\' }"> <ul> <li class="{ block + \'__info\' }"> { getLeftString() } </li> <li><a class="{ disabled: !undone.length }" onclick="{ markAllComplete }" href="">Mark all as complete</a></li> </ul> </div>', function(opts) {
+riot.tag('todo-app', '<form onsubmit="{ add }" class="add"> <div class="add__left"> <input name="add__input" class="add__input" required> </div> <div class="add__right"> <button type="submit" name="add_submit" class="add__submit">Add Todo</button> </div> </form> <ul class="{ block + \'__list\' }" if="{ todos.length }"> <li class="{ block + \'__item\' }" each="{ todos }"> <label> <input onchange="{ parent.toggle }" class="checkbox" type="checkbox" __checked="{ completed }">{ name } </label> <a onclick="{ parent.delete }" href>×</a> </li> </ul> <div class="{ block + \'__foot\' }"> <ul> <li class="{ block + \'__info\' }"> { getLeftString() } </li> <li><a class="{ disabled: !undone.length }" onclick="{ markAllComplete }" href="">Mark all as complete</a></li> </ul> </div>', function(opts) {
     var that = initFunctions.call(this);
 
     this.block = 'todo-app';
     this.todos = opts.todos;
-    this.undone = this.getUndone();
+    this.getUndone();
 
     function initFunctions() {
 
@@ -11,36 +11,103 @@ riot.tag('todo-app', '<form onsubmit="{ add }" class="add"> <div class="add__lef
             var that = this,
                 data = {
                     name: this.add__input.value,
-                    author: 'tyv',
+                    author: globalData.login,
                     updated: Date.now()
                 };
 
-            $.post('/todo', data)
-                .done(function(data) {
-                    console.log('done: ', data);
-                    that.onAddTodoSuccess(data);
+            TodoAPI
+                .addTodo(data)
+                    .done(function(data) {
+                        console.log('done: ', data);
+                        that.onAddTodoSuccess(data);
 
-                })
-                .fail(function(e) { console.log('fail: ', e) });
+                    })
+                    .fail(function(e) {
+                        console.log('fail: ', e)
+                    });
         }
 
         this.onAddTodoSuccess = function(data) {
 
             this.todos.push(data);
-            this.undone = this.getUndone();
+            this.getUndone();
             this.update();
 
         }
 
         this.markAllComplete = function() {
-            this.todos.forEach(function(todo) {
-                todo.completed = true;
-            });
-            this.undone = this.getUndone();
+
+            var that = this,
+                todos = this.todos.map(function(todo) {
+                            todo.completed = true;
+                            return todo;
+                        });
+
+            TodoAPI
+                .updateTodos(todos)
+                .done(function(todos) { that.markAllCompleteSuccess(todos) })
+                .fail(function(e) { that.markAllCompleteFail(e) })
+
+        }
+
+        this.markAllCompleteSuccess = function(todos) {
+            this.todos = todos;
+            this.getUndone();
+        }
+
+        this.markAllCompleteFail = function(e) {
+            console.log('error bulk change', e);
+        }
+
+        this.toggle = function(e) {
+
+            var that = this.parent,
+                todo = $.extend({}, e.item);
+
+            todo.completed = !todo.completed;
+
+            TodoAPI
+                .updateTodo(todo)
+                .done(function(todo) {
+                    that.toggleSuccess(todo, e.item)
+                })
+                .fail(function(e) {
+                    that.toggleFail(e)
+                })
+        }
+
+        this.toggleSuccess = function(todo, item) {
+            item.completed = todo.completed;
+        }
+
+        this.toggleFail = function(e) {
+            console.log('toggle fail: ', e);
+        }
+
+        this.delete = function(e) {
+
+            TodoAPI
+                .deleteTodo(e.item._id)
+                .done(function() {
+                    that.deleteSuccess(e.item)
+                })
+                .fail(function(e) {
+                    that.deleteFail(e)
+                })
+        }
+
+        this.deleteSuccess = function(item) {
+            this.todos.splice(this.todos.indexOf(item), 1);
+            this.getUndone();
+            this.update();
+        }
+
+        this.deleteFail = function(e) {
+            console.log('delete fail: ', e);
         }
 
         this.getUndone = function() {
-            return this.todos.filter(function(todo) {
+            this.undone = this.todos.filter(function(todo) {
                 return !todo.completed
             });
         }

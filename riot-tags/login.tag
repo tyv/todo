@@ -54,15 +54,19 @@
             .fail(this.onLoginFail.bind(this));
     }
 
-    onLogin(data) {
-        getTodos()
-            .done(function(data) {
-                riot.mount('todo-app', { todos: data });
-                $(this.root).remove();
-            }.bind(this))
-            .fail(function() {
-                conole.log('data retirieve fail');
-            })
+    onLogin(username) {
+
+        globalData.login = username;
+
+        TodoAPI
+            .getTodos()
+                .done(function(todos) {
+                    riot.mount('todo-app', { todos: todos });
+                    $(this.root).remove();
+                }.bind(this))
+                .fail(function() {
+                    conole.log('data retirieve fail');
+                })
     }
 
     onLoginFail(e) {
