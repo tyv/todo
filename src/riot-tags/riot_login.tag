@@ -56,7 +56,7 @@
 
     onLogin(username) {
 
-        globalData.login = username;
+        commonData.login = username;
 
         TodoAPI
             .getTodos()

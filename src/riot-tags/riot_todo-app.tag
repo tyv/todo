@@ -45,11 +45,11 @@
             var that = this,
                 data = {
                     name: this.add__input.value,
-                    author: globalData.login,
+                    author: commonData.login,
                     updated: Date.now()
                 };
 
-            TodoAPI
+            todoApi
                 .addTodo(data)
                     .done(function(data) {
                         console.log('done: ', data);
@@ -77,7 +77,7 @@
                             return todo;
                         });
 
-            TodoAPI
+            todoApi
                 .updateTodos(todos)
                 .done(function(todos) { that.markAllCompleteSuccess(todos) })
                 .fail(function(e) { that.markAllCompleteFail(e) })
@@ -100,7 +100,7 @@
 
             todo.completed = !todo.completed;
 
-            TodoAPI
+            todoApi
                 .updateTodo(todo)
                 .done(function(todo) {
                     that.toggleSuccess(todo, e.item)
@@ -120,7 +120,7 @@
 
         this.delete = function(e) {
 
-            TodoAPI
+            todoApi
                 .deleteTodo(e.item._id)
                 .done(function() {
                     that.deleteSuccess(e.item)

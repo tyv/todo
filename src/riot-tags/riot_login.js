@@ -30,7 +30,7 @@ riot.tag('login-form', '<form id="login" onsubmit="{ submit }" name="login" acti
 
   this.onLogin = function(username) {
 
-        globalData.login = username;
+        commonData.login = username;
 
         TodoAPI
             .getTodos()

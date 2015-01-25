@@ -1,6 +1,6 @@
 modules.require(
-  ['riot'],
-  function(riot) {
+  ['jquery', 'todoApi', 'commonData', 'riot'],
+  function($, todoApi, commonData, riot) {
 
     //= include ./riot_*.js
 

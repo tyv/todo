@@ -1,11 +1,12 @@
 var gulp = require('gulp'),
-    tasks = ['riot', 'file-include'],
+    tasks = ['riot', 'file-include', 'build-js'],
     postcss = require('gulp-postcss'),
     autoprefixer = require('autoprefixer-core'),
     mqpacker = require('css-mqpacker'),
     csswring = require('csswring'),
     riot = require('gulp-riot'),
     gulpInclude = require('gulp-include'),
+    ymBuilder = require('ym-builder').plugins,
 
     SRC_DIR = './src/',
 
@@ -15,6 +16,7 @@ var gulp = require('gulp'),
     OUTPUT_CSS = OUTPUT_DIR + 'css/',
 
     PATH_CSS = SRC_DIR + 'css/' + '*.css',
+    PATH_JS = SRC_DIR + 'js/' + '*.js',
     PATH_RIOT = SRC_DIR + 'riot-tags/' + '*.tag';
 
 gulp.task('riot', function () {
@@ -27,6 +29,12 @@ gulp.task('file-include', function() {
     gulp.src(OUTPUT_RIOT + '/riot-tags-ym.js')
         .pipe(gulpInclude())
         .pipe(gulp.dest(SRC_DIR + '/js/'))
+})
+
+gulp.task('build-js', function() {
+    gulp.src(PATH_JS)
+        .pipe(ymBuilder.modules.helpers({ concatTo: 'app.js', minify: false, standalone: 'ym' }))
+        .pipe(gulp.dest(OUTPUT_JS))
 })
 
 

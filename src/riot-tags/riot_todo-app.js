@@ -11,11 +11,11 @@ riot.tag('todo-app', '<form onsubmit="{ add }" class="add"> <div class="add__lef
             var that = this,
                 data = {
                     name: this.add__input.value,
-                    author: globalData.login,
+                    author: commonData.login,
                     updated: Date.now()
                 };
 
-            TodoAPI
+            todoApi
                 .addTodo(data)
                     .done(function(data) {
                         console.log('done: ', data);
@@ -43,7 +43,7 @@ riot.tag('todo-app', '<form onsubmit="{ add }" class="add"> <div class="add__lef
                             return todo;
                         });
 
-            TodoAPI
+            todoApi
                 .updateTodos(todos)
                 .done(function(todos) { that.markAllCompleteSuccess(todos) })
                 .fail(function(e) { that.markAllCompleteFail(e) })
@@ -66,7 +66,7 @@ riot.tag('todo-app', '<form onsubmit="{ add }" class="add"> <div class="add__lef
 
             todo.completed = !todo.completed;
 
-            TodoAPI
+            todoApi
                 .updateTodo(todo)
                 .done(function(todo) {
                     that.toggleSuccess(todo, e.item)
@@ -86,7 +86,7 @@ riot.tag('todo-app', '<form onsubmit="{ add }" class="add"> <div class="add__lef
 
         this.delete = function(e) {
 
-            TodoAPI
+            todoApi
                 .deleteTodo(e.item._id)
                 .done(function() {
                     that.deleteSuccess(e.item)
