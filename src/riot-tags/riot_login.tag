@@ -58,7 +58,7 @@
 
         commonData.login = username;
 
-        TodoAPI
+        todoAPI
             .getTodos()
                 .done(function(todos) {
                     riot.mount('todo-app', { todos: todos });

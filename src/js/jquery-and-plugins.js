@@ -1,4 +1,4 @@
-modules.define(
+ym.modules.define(
     'jquery',
     ['basket'],
     function(provide, basket) {
@@ -13,8 +13,8 @@ modules.define(
                     url: 'http://yastatic.net/jquery/cookie/1.0/jquery.cookie.min.js',
                     key: 'jquery_cookie',
                 })
-            })
-
-        provide(jQuery.noConflict(true));
+            }).then(function() {
+                provide(jQuery);
+            });
 
     });

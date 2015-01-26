@@ -1,4 +1,4 @@
-modules.define(
+ym.modules.define(
     'commonData',
     ['jquery'],
     function(provide, $) {

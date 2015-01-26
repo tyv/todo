@@ -1,6 +1,6 @@
-modules.require(
-    ['jquery', 'riot', 'todoApi'],
-    function($, riot, todoApi) {
+ym.modules.require(
+    ['jquery', 'riot', 'todoAPI'],
+    function($, riot, todoAPI) {
 
         todoAPI
             .getTodos()

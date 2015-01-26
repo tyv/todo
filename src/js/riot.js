@@ -1,4 +1,4 @@
-modules.define(
+ym.modules.define(
     'riot',
     function(provide) {
 

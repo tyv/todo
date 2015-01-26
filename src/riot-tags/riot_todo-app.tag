@@ -41,7 +41,7 @@
     function initFunctions() {
 
         this.add = function() {
-             //TODO fix 'author'
+
             var that = this,
                 data = {
                     name: this.add__input.value,
@@ -49,7 +49,7 @@
                     updated: Date.now()
                 };
 
-            todoApi
+            todoAPI
                 .addTodo(data)
                     .done(function(data) {
                         console.log('done: ', data);
@@ -77,7 +77,7 @@
                             return todo;
                         });
 
-            todoApi
+            todoAPI
                 .updateTodos(todos)
                 .done(function(todos) { that.markAllCompleteSuccess(todos) })
                 .fail(function(e) { that.markAllCompleteFail(e) })
@@ -100,7 +100,7 @@
 
             todo.completed = !todo.completed;
 
-            todoApi
+            todoAPI
                 .updateTodo(todo)
                 .done(function(todo) {
                     that.toggleSuccess(todo, e.item)
@@ -120,7 +120,7 @@
 
         this.delete = function(e) {
 
-            todoApi
+            todoAPI
                 .deleteTodo(e.item._id)
                 .done(function() {
                     that.deleteSuccess(e.item)

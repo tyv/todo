@@ -1,6 +1,6 @@
-modules.require(
-  ['jquery', 'todoApi', 'commonData', 'riot'],
-  function($, todoApi, commonData, riot) {
+ym.modules.require(
+  ['jquery', 'todoAPI', 'commonData', 'riot'],
+  function($, todoAPI, commonData, riot) {
     riot.tag('login-form', '<form id="login" onsubmit="{ submit }" name="login" action="/123" __disabled="{ disabled }"> <ul> <li each="{ fields }"> <label> <input onclick="{ parent.toggle }" type="radio" name="{ value.toLowerCase() }" __checked="{ checked }" __disabled="{ parent.disabled }" > { value } </label> </li> </ul> <input name="username" placeholder="login" __disabled="{ disabled }" required> <input type="password" name="password" placeholder="password" __disabled="{ disabled }" required> <div class="submit"> <button type="submit" __disabled="{ disabled }">{fields[0].checked ? fields[0].value : fields[1].value}</button> <button type="reset" __disabled="{ disabled }">Clear</button> </div> </form>', function(opts) {
         this.fields = [{
             value: 'Login',
@@ -35,7 +35,7 @@ modules.require(
     
             commonData.login = username;
     
-            TodoAPI
+            todoAPI
                 .getTodos()
                     .done(function(todos) {
                         riot.mount('todo-app', { todos: todos });
@@ -63,6 +63,7 @@ modules.require(
         function initFunctions() {
     
             this.add = function() {
+    
                 var that = this,
                     data = {
                         name: this.add__input.value,
@@ -70,7 +71,7 @@ modules.require(
                         updated: Date.now()
                     };
     
-                todoApi
+                todoAPI
                     .addTodo(data)
                         .done(function(data) {
                             console.log('done: ', data);
@@ -98,7 +99,7 @@ modules.require(
                                 return todo;
                             });
     
-                todoApi
+                todoAPI
                     .updateTodos(todos)
                     .done(function(todos) { that.markAllCompleteSuccess(todos) })
                     .fail(function(e) { that.markAllCompleteFail(e) })
@@ -121,7 +122,7 @@ modules.require(
     
                 todo.completed = !todo.completed;
     
-                todoApi
+                todoAPI
                     .updateTodo(todo)
                     .done(function(todo) {
                         that.toggleSuccess(todo, e.item)
@@ -141,7 +142,7 @@ modules.require(
     
             this.delete = function(e) {
     
-                todoApi
+                todoAPI
                     .deleteTodo(e.item._id)
                     .done(function() {
                         that.deleteSuccess(e.item)
