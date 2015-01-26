@@ -32,10 +32,21 @@ gulp.task('file-include', function() {
 })
 
 gulp.task('build-js', function() {
-    gulp.src(PATH_JS)
-        .pipe(ymBuilder.modules.helpers({ concatTo: 'app.js', minify: false, standalone: 'ym' }))
-        .pipe(gulp.dest(OUTPUT_JS))
-})
+    var cfg = {
+        concatTo: 'app.js',
+        standalone: 'ym',
+        minify: false
+    };
 
+    gulp.task('ym-clean', function () {
+        ymBuilder.del(OUTPUT_JS, { force: true });
+    });
+
+    gulp.src(PATH_JS)
+        .pipe(ymBuilder.modules.concat(cfg))
+        .pipe(ymBuilder.modules.modularSystem(cfg))
+        .pipe(ymBuilder.modules.closure())
+        .pipe(gulp.dest(OUTPUT_JS))
+})
 
 gulp.task('default', tasks);
