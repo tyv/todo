@@ -6,5 +6,7 @@ npm-debug.log
 .project
 .svn
 sftp-config.json
+src/riot-tags/*.js
+!src/riot-tags/riot-tags-ym.js
 *.sublime-project
 *.sublime-workspace
