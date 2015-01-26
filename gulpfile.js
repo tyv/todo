@@ -1,5 +1,11 @@
 var gulp = require('gulp'),
-    tasks = ['riot', 'file-include', 'build-js'],
+    tasks = ['riot',
+                'riot-include',
+                'build-js',
+                'build-css',
+                'watch',
+                'start'
+            ],
     postcss = require('gulp-postcss'),
     autoprefixer = require('autoprefixer-core'),
     mqpacker = require('css-mqpacker'),
@@ -7,6 +13,8 @@ var gulp = require('gulp'),
     riot = require('gulp-riot'),
     gulpInclude = require('gulp-include'),
     ymBuilder = require('ym-builder').plugins,
+    concatCSS = require('gulp-concat-css'),
+    shell = require('gulp-shell'),
 
     SRC_DIR = './src/',
 
@@ -25,11 +33,11 @@ gulp.task('riot', function () {
         .pipe(gulp.dest(OUTPUT_RIOT))
 });
 
-gulp.task('file-include', function() {
+gulp.task('riot-include', function() {
     gulp.src(OUTPUT_RIOT + '/riot-tags-ym.js')
         .pipe(gulpInclude())
         .pipe(gulp.dest(SRC_DIR + '/js/'))
-})
+});
 
 gulp.task('build-js', function() {
     var cfg = {
@@ -47,6 +55,30 @@ gulp.task('build-js', function() {
         .pipe(ymBuilder.modules.modularSystem(cfg))
         .pipe(ymBuilder.modules.closure())
         .pipe(gulp.dest(OUTPUT_JS))
-})
+});
+
+gulp.task('build-css', function() {
+
+    var processors = [
+        autoprefixer({browsers: ['last 2 version']}),
+        mqpacker,
+        csswring({ preserveHacks: true })
+    ];
+
+    gulp.src(PATH_CSS)
+        .pipe(concatCSS('bundle.css'))
+        .pipe(postcss(processors))
+        .pipe(gulp.dest(OUTPUT_CSS));
+});
+
+gulp.task('start', shell.task([
+  'npm start'
+]));
+
+gulp.task('watch', function() {
+    gulp.watch(SRC_DIR + 'css/**/*.css', ['build-css']);
+    gulp.watch(PATH_JS, ['build-js']);
+    gulp.watch(PATH_RIOT, ['riot', 'riot-include', 'build-js']);
+});
 
 gulp.task('default', tasks);
