@@ -1,10 +1,10 @@
 var gulp = require('gulp'),
-    tasks = ['riot',
-                'riot-include',
+    path = require('path'),
+    tasks = [
                 'build-js',
                 'build-css',
-                'watch',
-                'start'
+                'start',
+                'watch'
             ],
     postcss = require('gulp-postcss'),
     autoprefixer = require('autoprefixer-core'),
@@ -27,17 +27,6 @@ var gulp = require('gulp'),
     PATH_JS = SRC_DIR + 'js/' + '*.js',
     PATH_RIOT = SRC_DIR + 'riot-tags/' + '*.tag';
 
-gulp.task('riot', function () {
-    gulp.src(PATH_RIOT)
-        .pipe(riot())
-        .pipe(gulp.dest(OUTPUT_RIOT))
-});
-
-gulp.task('riot-include', function() {
-    gulp.src(OUTPUT_RIOT + '/riot-tags-ym.js')
-        .pipe(gulpInclude())
-        .pipe(gulp.dest(SRC_DIR + '/js/'))
-});
 
 gulp.task('build-js', function() {
     var cfg = {
@@ -45,6 +34,14 @@ gulp.task('build-js', function() {
         standalone: 'ym',
         minify: false
     };
+
+    gulp.src(PATH_RIOT)
+        .pipe(riot())
+        .pipe(gulp.dest(OUTPUT_RIOT))
+
+    gulp.src(OUTPUT_RIOT + '/riot-tags-ym.js')
+        .pipe(gulpInclude())
+        .pipe(gulp.dest(SRC_DIR + '/js/'))
 
     gulp.task('ym-clean', function () {
         ymBuilder.del(OUTPUT_JS, { force: true });
@@ -78,7 +75,7 @@ gulp.task('start', shell.task([
 gulp.task('watch', function() {
     gulp.watch(SRC_DIR + 'css/**/*.css', ['build-css']);
     gulp.watch(PATH_JS, ['build-js']);
-    gulp.watch(PATH_RIOT, ['riot', 'riot-include', 'build-js']);
+    gulp.watch(PATH_RIOT, ['build-js']);
 });
 
 gulp.task('default', tasks);
