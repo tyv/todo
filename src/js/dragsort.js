@@ -99,7 +99,9 @@ ym.modules.require(
                         list.draggedItem = $(e.target).closest("[data-listidx] > " + opts.tagName)
 
                         //record current position so on dragend we know if the dragged item changed position or not, not using getItems to allow dragsort to restore dragged item to original location in relation to fixed items
-                        list.draggedItem.attr("data-origpos", $(this).attr("data-listidx") + "-" + $(list.container).children().index(list.draggedItem));
+                        list.draggedItem
+                            .addClass('dragging')
+                            .attr("data-origpos", $(this).attr("data-listidx") + "-" + $(list.container).children().index(list.draggedItem));
 
                         //calculate mouse offset relative to draggedItem
                         var mt = parseInt(list.draggedItem.css("marginTop"));
@@ -273,7 +275,9 @@ ym.modules.require(
                                 else //was the last item in list
                                     $(lists[pos[0]].container).append(list.draggedItem);
                             }
-                        list.draggedItem.removeAttr("data-origpos");
+                        list.draggedItem
+                            .removeClass('dragging')
+                            .removeAttr("data-origpos");
 
                         list.draggedItem = null;
                         $(document).unbind("mousemove", list.swapItems);

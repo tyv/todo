@@ -5,10 +5,16 @@
     right: 10px;
     top: 50%;
 
-    margin-top: -5px;
+    margin-top: -11px;
 
-    width: 10px;
-    height: 10px;
+    width: 11px;
+    height: 12px;
+    padding: 5px;
 
-    background: red;
+    opacity: 0;
+    transition: opacity 0.2s ease-in;
+
+    cursor: move !important;
+
+    background: 50% 50% no-repeat url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAMCAYAAAC0qUeeAAAAU0lEQVQoz2NgQAP7d+/+D8IMhABMIUEN6AoJavj///8ZmCIQG4YJ2oBVEVBiPxoGKz578uQnZHFk62fCMJozZiJj0pxBdmigKyQpNPAqRA5vbAoBNOLPNZloZg8AAAAASUVORK5CYII=');
 }

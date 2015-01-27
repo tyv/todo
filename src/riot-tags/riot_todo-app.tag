@@ -25,7 +25,9 @@
     </form>
 
     <ul class="todo-app__list ruler" if={ todos.length }>
-        <li class="todo-app__item" each={ todos }>
+        <li
+            class="todo-app__item"
+            each={ todos }>
             <input
                 onchange={ parent.toggle }
                 class="custom-input custom-input_type_checkbox"
@@ -41,9 +43,9 @@
                     <a
                         class="todo-app__delete"
                         onclick={ parent.delete }
-                        href>×</a>
+                        href></a>
 
-                    <i class="drag"></i>
+                    <i ondragstart={ parent.onDragStart } class="drag"  draggable="true"></i>
                 </label>
         </li>
     </ul>
@@ -66,21 +68,12 @@
     this.login = commonData.login || 'username';
     this.getUndone();
 
-    this.on('mount', function() {
-        var $list = $('.todo-app__list'),
-            $items = $list.find('.todo-app__item');
 
-
-            $list.dragsort({
-                dragSelector: '.drag',
-                dragEnd: that.onDragEnd
-            });
-
-
-        this.todos.forEach(function(todo, index) {
-            $($items[index]).data('todo', todo);
-        })
+    this.on('mount afterupdate', function() {
+        console.log('bind');
+        this.bindDragHandler();
     });
+
 
     function initFunctions() {
 
@@ -111,7 +104,7 @@
             this.todos.push(data);
             this.getUndone();
             this.add__input.value = '';
-            this.update();
+            this.superUpdate();
 
         }
 
@@ -133,7 +126,7 @@
         this.onBulkUpdate = function(todos) {
             this.todos = todos;
             this.getUndone();
-            this.update();
+            this.superUpdate();
         }
 
         this.onBulkUpdateFail = function(e) {
@@ -160,7 +153,7 @@
         this.toggleSuccess = function(todo, item) {
             item.completed = todo.completed;
             this.getUndone();
-            this.update();
+            this.superUpdate();
         }
 
         this.toggleFail = function(e) {
@@ -182,7 +175,7 @@
         this.deleteSuccess = function(item) {
             this.todos.splice(this.todos.indexOf(item), 1);
             this.getUndone();
-            this.update();
+            this.superUpdate();
         }
 
         this.deleteFail = function(e) {
@@ -215,6 +208,10 @@
             return leftString;
         }
 
+        this.onDragStart = function(e) {
+            console.log('onDragStart', e);
+        }
+
         this.onDragEnd = function() {
             var newTodos = [],
                 $items = $('.todo-app__item');
@@ -224,6 +221,10 @@
                 todo.order = index + 1;
                 newTodos.push(todo);
             });
+
+            console.log('destroy');
+            $('.todo-app__list').dragsort('destroy');
+
 
             todoAPI
                 .updateTodos(newTodos)
@@ -242,6 +243,25 @@
             });
 
             return highestOrder;
+        }
+
+        this.bindDragHandler = function() {
+            var $list = $('.todo-app__list'),
+                $items = $('.todo-app__item');
+
+            $list.dragsort({
+                dragSelector: '.drag',
+                dragEnd: this.onDragEnd
+            });
+
+            this.todos.forEach(function(todo, index) {
+                $($items[index]).data('todo', todo);
+            });
+        }
+
+        this.superUpdate = function() {
+            this.update();
+            this.trigger('afterupdate');
         }
 
         return this;
