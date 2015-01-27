@@ -1,11 +1,12 @@
 .custom-input_type_text
 {
-    font: 14px/14px 'Open Sans', sans-serif;
+    font: 14px/40px 'Open Sans', sans-serif;
 
     box-sizing: border-box;
 
     width: 100%;
-    padding: 10px;
+    height: 40px;
+    padding: 0 10px;
 
     border: 1px solid #b7b6b6;
     border-radius: 6px;

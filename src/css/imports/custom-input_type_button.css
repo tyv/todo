@@ -1,6 +1,6 @@
 .custom-input_type_button
 {
-    font: bold 14px/19px 'Open Sans', sans-serif;
+    font: bold 14px/40px 'Open Sans', sans-serif;
 
     position: relative;
 
@@ -8,7 +8,8 @@
     box-sizing: border-box;
 
     width: 100%;
-    padding: 10px;
+    height: 40px;
+    padding: 0 10px;
 
     border-radius: 6px;
     border: 1px solid #999;

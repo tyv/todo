@@ -19,28 +19,28 @@ button:focus
 
 ::-webkit-input-placeholder
 {
-    font: 14px 'Open Sans', sans-serif;
+    font: 14px/40px 'Open Sans', sans-serif;
 
     color: #999;
 }
 
 :-moz-placeholder
 {
-    font: 14px 'Open Sans', sans-serif;
+    font: 14px/40px 'Open Sans', sans-serif;
 
     color: #999;
 }
 
 ::-moz-placeholder
 {
-    font: 14px 'Open Sans', sans-serif;
+    font: 14px/40px 'Open Sans', sans-serif;
 
     color: #999;
 }
 
 :-ms-input-placeholder
 {
-    font: 14px 'Open Sans', sans-serif;
+    font: 14px/40px 'Open Sans', sans-serif;
 
     color: #999;
 }
