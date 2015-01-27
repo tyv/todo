@@ -105,7 +105,12 @@ app.use(passport.session());
 
   });
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(
+        path.join(__dirname, 'public'),
+        {
+            expires: getStaticExpires()
+        }
+    ));
 
 
 app.use('/', index);
@@ -118,6 +123,15 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
+
+// Static expires
+function getStaticExpires() {
+    var now = new Date();
+
+    return app.get('env') === 'development' ?
+                        now :
+                        now.setFullYear(now.getFullYear() + 10);
+}
 
 // Cookie props
 function getCookieProps() {
