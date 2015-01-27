@@ -1,0 +1,36 @@
+.login
+{
+    width: 300px;
+    margin: 0 auto;
+    padding: 20px 20px 80px 20px;
+}
+
+.login__chooser
+{
+    margin-bottom: 20px;
+}
+
+.login__chooser-item,
+.login__line
+{
+    margin: 5px 0;
+}
+
+.login__submit
+{
+    display: flex;
+}
+
+.login__submit-:first-child
+{
+    flex-grow: 2;
+
+    margin-right: 5px;
+}
+
+.login__submit-:last-child
+{
+    flex-grow: 1;
+
+    margin-left: 5px;
+}

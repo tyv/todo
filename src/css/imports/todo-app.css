@@ -1,0 +1,61 @@
+.todo-app__list
+{
+    padding-bottom: 80px;
+}
+
+.todo-app__item:nth-child(odd)
+{
+    background: #F4F7FA;
+}
+
+.todo-app__item .custom-input__label
+{
+    display: block;
+
+    padding: 15px 20px;
+}
+
+.todo-app__item .custom-input:checked + .custom-input__label
+{
+    color: #999;
+    text-decoration: line-through;
+}
+
+.todo-app__delete
+{
+    position: absolute;
+    font-size: 18px;
+
+    margin-left: 20px;
+
+
+    color: #999;
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+.todo-app__item .custom-input__label:hover .todo-app__delete
+{
+    opacity: 1;
+}
+
+.todo-app__foot
+{
+    padding: 20px;
+}
+
+.todo-app__foot-list
+{
+    display: flex;
+}
+
+.todo-app__info,
+.todo-app__markall
+{
+    flex-grow: 1;
+}
+
+.todo-app__markall
+{
+    text-align: right;
+}

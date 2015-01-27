@@ -1,0 +1,13 @@
+.header
+{
+    padding: 45px 20px;
+
+    text-align: center;
+}
+
+.header__h1
+{
+    font-size: 30px;
+
+    font-weight: bold;
+}
