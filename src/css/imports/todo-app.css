@@ -10,9 +10,17 @@
 
 .todo-app__item .custom-input__label
 {
+    position: relative;
+
     display: block;
 
     padding: 15px 20px;
+}
+
+.todo-app__placeholder
+{
+    background: red;
+    height: 20px;
 }
 
 .todo-app__item .custom-input:checked + .custom-input__label

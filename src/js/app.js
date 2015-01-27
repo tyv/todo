@@ -5,6 +5,9 @@ ym.modules.require(
         todoAPI
             .getTodos()
                 .done(function(data) {
+                    data.sort(function(a, b) {
+                        return a.order - b.order;
+                    });
                     riot.mount('todo-app', { todos: data });
                 })
                 .fail(function() {

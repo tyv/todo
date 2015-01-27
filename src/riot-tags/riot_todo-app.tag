@@ -36,10 +36,14 @@
                 class="custom-input__label"
                 for={ _id }>
                     <i class="custom-input__icon"></i
-                    >{ name }<a
-                                class="todo-app__delete"
-                                onclick={ parent.delete }
-                                href>×</a>
+                    >{ name }
+
+                    <a
+                        class="todo-app__delete"
+                        onclick={ parent.delete }
+                        href>×</a>
+
+                    <i class="drag"></i>
                 </label>
         </li>
     </ul>
@@ -62,6 +66,22 @@
     this.login = commonData.login || 'username';
     this.getUndone();
 
+    this.on('mount', function() {
+        var $list = $('.todo-app__list'),
+            $items = $list.find('.todo-app__item');
+
+
+            $list.dragsort({
+                dragSelector: '.drag',
+                dragEnd: that.onDragEnd
+            });
+
+
+        this.todos.forEach(function(todo, index) {
+            $($items[index]).data('todo', todo);
+        })
+    });
+
     function initFunctions() {
 
         this.add = function() {
@@ -70,6 +90,7 @@
                 data = {
                     name: this.add__input.value,
                     author: commonData.login,
+                    order: this.getHighestOrder() + 1,
                     updated: Date.now()
                 };
 
@@ -104,17 +125,18 @@
 
             todoAPI
                 .updateTodos(todos)
-                .done(function(todos) { that.markAllCompleteSuccess(todos) })
-                .fail(function(e) { that.markAllCompleteFail(e) })
+                .done(function(todos) { that.onBulkUpdate(todos) })
+                .fail(function(e) { that.onBulkUpdateFail(e) })
 
         }
 
-        this.markAllCompleteSuccess = function(todos) {
+        this.onBulkUpdate = function(todos) {
             this.todos = todos;
             this.getUndone();
+            this.update();
         }
 
-        this.markAllCompleteFail = function(e) {
+        this.onBulkUpdateFail = function(e) {
             console.log('error bulk change', e);
         }
 
@@ -137,6 +159,8 @@
 
         this.toggleSuccess = function(todo, item) {
             item.completed = todo.completed;
+            this.getUndone();
+            this.update();
         }
 
         this.toggleFail = function(e) {
@@ -189,6 +213,35 @@
             }
 
             return leftString;
+        }
+
+        this.onDragEnd = function() {
+            var newTodos = [],
+                $items = $('.todo-app__item');
+
+            $items.each(function(index) {
+                var todo = $(this).data('todo');
+                todo.order = index + 1;
+                newTodos.push(todo);
+            });
+
+            todoAPI
+                .updateTodos(newTodos)
+                .done(function(todos) { that.onBulkUpdate(todos) })
+                .fail(function(e) { that.onBulkUpdateFail(e) })
+        }
+
+        this.getHighestOrder = function() {
+            var highestOrder = 0;
+
+            this.todos.forEach(function(todo) {
+
+                if (todo.order > highestOrder) {
+                    highestOrder = todo.order;
+                }
+            });
+
+            return highestOrder;
         }
 
         return this;
