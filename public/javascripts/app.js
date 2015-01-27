@@ -809,7 +809,9 @@ ym.modules.require(
                         list.draggedItem = $(e.target).closest("[data-listidx] > " + opts.tagName)
 
                         //record current position so on dragend we know if the dragged item changed position or not, not using getItems to allow dragsort to restore dragged item to original location in relation to fixed items
-                        list.draggedItem.attr("data-origpos", $(this).attr("data-listidx") + "-" + $(list.container).children().index(list.draggedItem));
+                        list.draggedItem
+                            .addClass('dragging')
+                            .attr("data-origpos", $(this).attr("data-listidx") + "-" + $(list.container).children().index(list.draggedItem));
 
                         //calculate mouse offset relative to draggedItem
                         var mt = parseInt(list.draggedItem.css("marginTop"));
@@ -983,7 +985,9 @@ ym.modules.require(
                                 else //was the last item in list
                                     $(lists[pos[0]].container).append(list.draggedItem);
                             }
-                        list.draggedItem.removeAttr("data-origpos");
+                        list.draggedItem
+                            .removeClass('dragging')
+                            .removeAttr("data-origpos");
 
                         list.draggedItem = null;
                         $(document).unbind("mousemove", list.swapItems);
@@ -1164,28 +1168,19 @@ ym.modules.require(
     })
     
     
-    riot.tag('todo-app', '<header class="header ruler"> <h1 class="header__h1">Todos for { login }</h1> </header> <form onsubmit="{ add }" class="add"> <div class="add__col"> <input class="custom-input custom-input_type_text" name="add__input" class="add__input" placeholder="What needs to be done?" required> </div> <div class="add__col"> <button class="custom-input custom-input_type_button" type="submit" name="add_submit" class="add__submit">Add Todo</button> </div> </form> <ul class="todo-app__list ruler" if="{ todos.length }"> <li class="todo-app__item" each="{ todos }"> <input onchange="{ parent.toggle }" class="custom-input custom-input_type_checkbox" id="{ _id }" type="checkbox" __checked="{ completed }"> <label class="custom-input__label" for="{ _id }"> <i class="custom-input__icon"></i >{ name } <a class="todo-app__delete" onclick="{ parent.delete }" href>×</a> <i class="drag"></i> </label> </li> </ul> <div class="todo-app__foot"> <ul class="todo-app__foot-list"> <li class="todo-app__info"> { getLeftString() } </li> <li><a class="{ \'todo-app__markall\': true, disabled: !undone.length }" onclick="{ markAllComplete }" href="">Mark all as complete</a> </li> </ul> </div>', function(opts) {
+    riot.tag('todo-app', '<header class="header ruler"> <h1 class="header__h1">Todos for { login }</h1> </header> <form onsubmit="{ add }" class="add"> <div class="add__col"> <input class="custom-input custom-input_type_text" name="add__input" class="add__input" placeholder="What needs to be done?" required> </div> <div class="add__col"> <button class="custom-input custom-input_type_button" type="submit" name="add_submit" class="add__submit">Add Todo</button> </div> </form> <ul class="todo-app__list ruler" if="{ todos.length }"> <li class="todo-app__item" each="{ todos }"> <input onchange="{ parent.toggle }" class="custom-input custom-input_type_checkbox" id="{ _id }" type="checkbox" __checked="{ completed }"> <label class="custom-input__label" for="{ _id }"> <i class="custom-input__icon"></i >{ name } <a class="todo-app__delete" onclick="{ parent.delete }" href></a> <i ondragstart="{ parent.onDragStart }" class="drag" draggable="true"></i> </label> </li> </ul> <div class="todo-app__foot"> <ul class="todo-app__foot-list"> <li class="todo-app__info"> { getLeftString() } </li> <li><a class="{ \'todo-app__markall\': true, disabled: !undone.length }" onclick="{ markAllComplete }" href="">Mark all as complete</a> </li> </ul> </div>', function(opts) {
         var that = initFunctions.call(this);
     
         this.todos = opts.todos;
         this.login = commonData.login || 'username';
         this.getUndone();
     
-        this.on('mount', function() {
-            var $list = $('.todo-app__list'),
-                $items = $list.find('.todo-app__item');
     
-    
-                $list.dragsort({
-                    dragSelector: '.drag',
-                    dragEnd: that.onDragEnd
-                });
-    
-    
-            this.todos.forEach(function(todo, index) {
-                $($items[index]).data('todo', todo);
-            })
+        this.on('mount afterupdate', function() {
+            console.log('bind');
+            this.bindDragHandler();
         });
+    
     
         function initFunctions() {
     
@@ -1216,7 +1211,7 @@ ym.modules.require(
                 this.todos.push(data);
                 this.getUndone();
                 this.add__input.value = '';
-                this.update();
+                this.superUpdate();
     
             }
     
@@ -1238,7 +1233,7 @@ ym.modules.require(
             this.onBulkUpdate = function(todos) {
                 this.todos = todos;
                 this.getUndone();
-                this.update();
+                this.superUpdate();
             }
     
             this.onBulkUpdateFail = function(e) {
@@ -1265,7 +1260,7 @@ ym.modules.require(
             this.toggleSuccess = function(todo, item) {
                 item.completed = todo.completed;
                 this.getUndone();
-                this.update();
+                this.superUpdate();
             }
     
             this.toggleFail = function(e) {
@@ -1287,7 +1282,7 @@ ym.modules.require(
             this.deleteSuccess = function(item) {
                 this.todos.splice(this.todos.indexOf(item), 1);
                 this.getUndone();
-                this.update();
+                this.superUpdate();
             }
     
             this.deleteFail = function(e) {
@@ -1320,6 +1315,10 @@ ym.modules.require(
                 return leftString;
             }
     
+            this.onDragStart = function(e) {
+                console.log('onDragStart', e);
+            }
+    
             this.onDragEnd = function() {
                 var newTodos = [],
                     $items = $('.todo-app__item');
@@ -1329,6 +1328,10 @@ ym.modules.require(
                     todo.order = index + 1;
                     newTodos.push(todo);
                 });
+    
+                console.log('destroy');
+                $('.todo-app__list').dragsort('destroy');
+    
     
                 todoAPI
                     .updateTodos(newTodos)
@@ -1347,6 +1350,25 @@ ym.modules.require(
                 });
     
                 return highestOrder;
+            }
+    
+            this.bindDragHandler = function() {
+                var $list = $('.todo-app__list'),
+                    $items = $('.todo-app__item');
+    
+                $list.dragsort({
+                    dragSelector: '.drag',
+                    dragEnd: this.onDragEnd
+                });
+    
+                this.todos.forEach(function(todo, index) {
+                    $($items[index]).data('todo', todo);
+                });
+            }
+    
+            this.superUpdate = function() {
+                this.update();
+                this.trigger('afterupdate');
             }
     
             return this;
