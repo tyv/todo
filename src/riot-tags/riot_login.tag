@@ -1,27 +1,67 @@
 <login-form>
-    <form id="login" onsubmit={ submit } name="login" action="/123" disabled={ disabled }>
 
-        <ul>
-            <li each={ fields }>
-              <label>
+    <header class="header ruler">
+        <h1 class="header__h1">Sign in/up</h1>
+    </header>
+
+    <form onsubmit={ submit }
+            class="login"
+            id="login-form"
+            name="login"
+            action="/123"
+            disabled={ disabled }>
+
+        <ul class="login__chooser">
+            <li class="login__chooser-item" each={ fields }>
                 <input
-                    onclick={ parent.toggle }
+                    class="custom-input custom-input_type_radio"
+                    id={ value.toLowerCase() }
+                    onclick={ !checked && parent.toggle }
                     type="radio"
-                    name={ value.toLowerCase() }
+                    name="chooser"
                     checked={ checked }
                     disabled={ parent.disabled }
-                >
-                { value }
-              </label>
+                ><label class="custom-input__label" for={ value.toLowerCase() }><i class="custom-input__icon"></i>{ value }</label>
             </li>
         </ul>
 
-        <input name="username" placeholder="login"  disabled={ disabled } required>
-        <input type="password" name="password" placeholder="password" disabled={ disabled } required>
 
-        <div class="submit">
-            <button type="submit" disabled={ disabled }>{fields[0].checked ? fields[0].value : fields[1].value}</button>
-            <button type="reset" disabled={ disabled }>Clear</button>
+        <div class="login__line">
+            <input
+                class="custom-input custom-input_type_text"
+                name="username"
+                placeholder="Login"
+                disabled={ disabled }
+                required
+            >
+        </div>
+
+        <div class="login__line">
+            <input
+                class="custom-input custom-input_type_text"
+                type="password"
+                name="password"
+                placeholder="Password"
+                disabled={ disabled }
+                required
+            >
+        </div>
+        <div class="login__submit">
+            <div class="login__submit-">
+                <button
+                    class="custom-input custom-input_type_button custom-input_action_submit"
+                    type="submit"
+                    disabled={ disabled }>{fields[0].checked ? fields[0].value : fields[1].value}
+                </button>
+            </div>
+
+            <div class="login__submit-">
+                <button
+                    class="custom-input custom-input_type_button"
+                    type="reset"
+                    disabled={ disabled }>Clear
+                </button>
+            </div>
         </div>
     </form>
 
@@ -32,7 +72,7 @@
         value: 'Register'
     }];
 
-    toggle() {
+    toggle(e) {
 
         this.fields.forEach(function(field) {
             field.checked = !field.checked;
@@ -49,7 +89,7 @@
 
         this.disabled = true;
 
-        $.post(url, $(this.login).serialize())
+        $.post(url, $(this['login-form']).serialize())
             .done(this.onLogin.bind(this))
             .fail(this.onLoginFail.bind(this));
     }

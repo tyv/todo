@@ -1,41 +1,65 @@
-<todo-app class={ block }>
+<todo-app class="todo-app">
+
+    <header class="header ruler">
+        <h1 class="header__h1">Todos for { login }</h1>
+    </header>
+
 
     <form onsubmit={ add } class="add">
-        <div class="add__left">
-            <input name="add__input" class="add__input" required>
+        <div class="add__col">
+            <input
+                class="custom-input custom-input_type_text"
+                name="add__input"
+                class="add__input"
+                placeholder="What needs to be done?"
+                required>
         </div>
 
-        <div class="add__right">
-            <button type="submit" name="add_submit" class="add__submit">Add Todo</button>
+        <div class="add__col">
+            <button
+                class="custom-input custom-input_type_button"
+                type="submit"
+                name="add_submit"
+                class="add__submit">Add Todo</button>
         </div>
     </form>
 
-    <ul class={ block + '__list' } if={ todos.length }>
-        <li class={ block + '__item' } each={ todos }>
-            <label>
-                <input
-                        onchange={ parent.toggle }
-                        class="checkbox"
-                        type="checkbox"
-                        checked={ completed }>{ name }
-            </label>
-            <a onclick={ parent.delete } href>×</a>
+    <ul class="todo-app__list ruler" if={ todos.length }>
+        <li class="todo-app__item" each={ todos }>
+            <input
+                onchange={ parent.toggle }
+                class="custom-input custom-input_type_checkbox"
+                id={ _id }
+                type="checkbox"
+                checked={ completed }>
+            <label
+                class="custom-input__label"
+                for={ _id }>
+                    <i class="custom-input__icon"></i
+                    >{ name }<a
+                                class="todo-app__delete"
+                                onclick={ parent.delete }
+                                href>×</a>
+                </label>
         </li>
     </ul>
 
-    <div class={ block + '__foot' }>
-        <ul>
-            <li class={ block + '__info' }>
+    <div class="todo-app__foot">
+        <ul class="todo-app__foot-list">
+            <li class="todo-app__info">
                 { getLeftString() }
             </li>
-            <li><a class={ disabled: !undone.length } onclick={ markAllComplete } href="">Mark all as complete</a></li>
+            <li><a
+                    class={ 'todo-app__markall': true, disabled: !undone.length }
+                    onclick={ markAllComplete } href="">Mark all as complete</a>
+            </li>
         </ul>
     </div>
 
     var that = initFunctions.call(this);
 
-    this.block = 'todo-app';
     this.todos = opts.todos;
+    this.login = commonData.login || 'username';
     this.getUndone();
 
     function initFunctions() {
@@ -65,6 +89,7 @@
 
             this.todos.push(data);
             this.getUndone();
+            this.add__input.value = '';
             this.update();
 
         }
