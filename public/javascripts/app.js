@@ -1177,9 +1177,13 @@ ym.modules.require(
     
     
         this.on('mount afterupdate', function() {
-            console.log('bind');
+            if (!this.mounted) this.mounted = true;
             this.bindDragHandler();
         });
+    
+        this.on('update', function() {
+            this.mounted && this.$list.dragsort('destroy');
+        })
     
     
         function initFunctions() {
@@ -1329,10 +1333,6 @@ ym.modules.require(
                     newTodos.push(todo);
                 });
     
-                console.log('destroy');
-                $('.todo-app__list').dragsort('destroy');
-    
-    
                 todoAPI
                     .updateTodos(newTodos)
                     .done(function(todos) { that.onBulkUpdate(todos) })
@@ -1353,16 +1353,18 @@ ym.modules.require(
             }
     
             this.bindDragHandler = function() {
-                var $list = $('.todo-app__list'),
-                    $items = $('.todo-app__item');
+                var that = this;
     
-                $list.dragsort({
+                this.$list = $('.todo-app__list');
+                this.$items = this.$list.find('.todo-app__item');
+    
+                this.$list.dragsort({
                     dragSelector: '.drag',
                     dragEnd: this.onDragEnd
                 });
     
                 this.todos.forEach(function(todo, index) {
-                    $($items[index]).data('todo', todo);
+                    $(that.$items[index]).data('todo', todo);
                 });
             }
     
