@@ -1155,6 +1155,7 @@ ym.modules.require(
                     .done(function(todos) {
                         riot.mount('todo-app', { todos: todos });
                         $(this.root).remove();
+                        riot.update();
                     }.bind(this))
                     .fail(function() {
                         conole.log('data retirieve fail');
@@ -1168,7 +1169,7 @@ ym.modules.require(
     })
     
     
-    riot.tag('todo-app', '<header class="header ruler"> <h1 class="header__h1">Todos for { login }</h1> </header> <form onsubmit="{ add }" class="add"> <div class="add__col"> <input class="custom-input custom-input_type_text" name="add__input" class="add__input" placeholder="What needs to be done?" required> </div> <div class="add__col"> <button class="custom-input custom-input_type_button" type="submit" name="add_submit" class="add__submit">Add Todo</button> </div> </form> <ul class="todo-app__list ruler" if="{ todos.length }"> <li class="todo-app__item" each="{ todos }"> <input onchange="{ parent.toggle }" class="custom-input custom-input_type_checkbox" id="{ _id }" type="checkbox" __checked="{ completed }"> <label class="custom-input__label" for="{ _id }"> <i class="custom-input__icon"></i >{ name } <a class="todo-app__delete" onclick="{ parent.delete }" href></a> <i ondragstart="{ parent.onDragStart }" class="drag" draggable="true"></i> </label> </li> </ul> <div class="todo-app__foot"> <ul class="todo-app__foot-list"> <li class="todo-app__info"> { getLeftString() } </li> <li><a class="{ \'todo-app__markall\': true, disabled: !undone.length }" onclick="{ markAllComplete }" href="">Mark all as complete</a> </li> </ul> </div>', function(opts) {
+    riot.tag('todo-app', '<header class="header ruler"> <a onclick="{ logout }" class="logout" href="/passport/logout">Logout</a> <h1 class="header__h1">Todos for { login }</h1> </header> <form onsubmit="{ add }" class="add"> <div class="add__col"> <input class="custom-input custom-input_type_text" name="add__input" class="add__input" placeholder="What needs to be done?" required> </div> <div class="add__col"> <button class="custom-input custom-input_type_button" type="submit" name="add_submit" class="add__submit">Add Todo</button> </div> </form> <ul class="todo-app__list ruler" if="{ todos.length }"> <li class="todo-app__item" each="{ todos }"> <input onchange="{ parent.toggle }" class="custom-input custom-input_type_checkbox" id="{ _id }" type="checkbox" __checked="{ completed }"> <label class="custom-input__label" for="{ _id }"> <i class="custom-input__icon"></i >{ name } <a class="todo-app__delete" onclick="{ parent.delete }" href></a> <i ondragstart="{ parent.onDragStart }" class="drag" draggable="true"></i> </label> </li> </ul> <div class="todo-app__foot"> <ul class="todo-app__foot-list"> <li class="todo-app__info"> { getLeftString() } </li> <li><a class="{ \'todo-app__markall\': true, disabled: !undone.length }" onclick="{ markAllComplete }" href="">Mark all as complete</a> </li> </ul> </div>', function(opts) {
         var that = initFunctions.call(this);
     
         this.todos = opts.todos;

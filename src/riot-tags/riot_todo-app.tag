@@ -1,6 +1,7 @@
 <todo-app class="todo-app">
 
     <header class="header ruler">
+        <a onclick={ logout } class="logout" href="/passport/logout">Logout</a>
         <h1 class="header__h1">Todos for { login }</h1>
     </header>
 

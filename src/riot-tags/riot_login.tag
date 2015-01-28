@@ -103,6 +103,7 @@
                 .done(function(todos) {
                     riot.mount('todo-app', { todos: todos });
                     $(this.root).remove();
+                    riot.update();
                 }.bind(this))
                 .fail(function() {
                     conole.log('data retirieve fail');
