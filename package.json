@@ -32,7 +32,7 @@
     "gulp-concat-css": "^2.0.0",
     "gulp-include": "^1.1.1",
     "gulp-postcss": "^3.0.0",
-    "gulp-riot": "^0.1.2",
+    "gulp-riot": "^0.2.0",
     "gulp-shell": "^0.2.11",
     "riot": "^2.0.1",
     "ym-builder": "^0.1.1"
