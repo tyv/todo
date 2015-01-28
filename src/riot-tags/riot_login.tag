@@ -101,6 +101,12 @@
         todoAPI
             .getTodos()
                 .done(function(todos) {
+
+                    todos.sort(function(a, b) {
+                        return a.order - b.order;
+                    });
+
+
                     riot.mount('todo-app', { todos: todos });
                     $(this.root).remove();
                     riot.update();
