@@ -1117,6 +1117,7 @@ ym.modules.require(
   ['jquery', 'todoAPI', 'commonData', 'riot'],
   function($, todoAPI, commonData, riot) {
     riot.tag('login-form', '<header class="header ruler"> <h1 class="header__h1">Sign in/up</h1> </header> <form onsubmit="{ submit }" class="login" id="login-form" name="login" action="/123" __disabled="{ disabled }"> <ul class="login__chooser"> <li class="login__chooser-item" each="{ fields }"> <input class="custom-input custom-input_type_radio" id="{ value.toLowerCase() }" onclick="{ !checked && parent.toggle }" type="radio" name="chooser" __checked="{ checked }" __disabled="{ parent.disabled }" ><label class="custom-input__label" for="{ value.toLowerCase() }"><i class="custom-input__icon"></i>{ value }</label> </li> </ul> <div class="login__line"> <input class="custom-input custom-input_type_text" name="username" placeholder="Login" __disabled="{ disabled }" required > </div> <div class="login__line"> <input class="custom-input custom-input_type_text" type="password" name="password" placeholder="Password" __disabled="{ disabled }" required > </div> <div class="login__submit"> <div class="login__submit-"> <button class="custom-input custom-input_type_button custom-input_action_submit" type="submit" __disabled="{ disabled }">{fields[0].checked ? fields[0].value : fields[1].value} </button> </div> <div class="login__submit-"> <button class="custom-input custom-input_type_button" type="reset" __disabled="{ disabled }">Clear </button> </div> </div> </form>', function(opts) {
+    
         this.fields = [{
             value: 'Login',
             checked: true
@@ -1124,17 +1125,17 @@ ym.modules.require(
             value: 'Register'
         }];
     
-      this.toggle = function(e) {
+        this.toggle = function(e) {
     
             this.fields.forEach(function(field) {
                 field.checked = !field.checked;
             });
     
             return true;
-        }.bind(this)
+        }.bind(this);
     
     
-      this.submit = function(e) {
+        this.submit = function(e) {
             var url = '/passport';
     
             if (this.fields[1].checked) url += '/register';
@@ -1144,9 +1145,9 @@ ym.modules.require(
             $.post(url, $(this['login-form']).serialize())
                 .done(this.onLogin.bind(this))
                 .fail(this.onLoginFail.bind(this));
-        }.bind(this)
+        }.bind(this);
     
-      this.onLogin = function(username) {
+        this.onLogin = function(username) {
     
             commonData.login = username;
     
@@ -1160,16 +1161,18 @@ ym.modules.require(
                     .fail(function() {
                         conole.log('data retirieve fail');
                     })
-        }.bind(this)
+        }.bind(this);
     
-      this.onLoginFail = function(e) {
+        this.onLoginFail = function(e) {
             console.log('fail', e);
-        }.bind(this)
+        }.bind(this);
     
-    })
+    
+    });
     
     
     riot.tag('todo-app', '<header class="header ruler"> <a onclick="{ logout }" class="logout" href="/passport/logout">Logout</a> <h1 class="header__h1">Todos for { login }</h1> </header> <form onsubmit="{ add }" class="add"> <div class="add__col"> <input class="custom-input custom-input_type_text" name="add__input" class="add__input" placeholder="What needs to be done?" required> </div> <div class="add__col"> <button class="custom-input custom-input_type_button" type="submit" name="add_submit" class="add__submit">Add Todo</button> </div> </form> <ul class="todo-app__list ruler" if="{ todos.length }"> <li class="todo-app__item" each="{ todos }"> <input onchange="{ parent.toggle }" class="custom-input custom-input_type_checkbox" id="{ _id }" type="checkbox" __checked="{ completed }"> <label class="custom-input__label" for="{ _id }"> <i class="custom-input__icon"></i >{ name } <a class="todo-app__delete" onclick="{ parent.delete }" href></a> <i ondragstart="{ parent.onDragStart }" class="drag" draggable="true"></i> </label> </li> </ul> <div class="todo-app__foot"> <ul class="todo-app__foot-list"> <li class="todo-app__info"> { getLeftString() } </li> <li><a class="{ \'todo-app__markall\': true, disabled: !undone.length }" onclick="{ markAllComplete }" href="">Mark all as complete</a> </li> </ul> </div>', function(opts) {
+    
         var that = initFunctions.call(this);
     
         this.todos = opts.todos;
@@ -1378,7 +1381,8 @@ ym.modules.require(
     
         };
     
-    })
+    
+    });
 
 
   });
