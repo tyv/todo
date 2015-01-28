@@ -3,7 +3,7 @@
 ```
 
 ```bash
-    npm i && ./run
+    git clone https://github.com/tyv/todo.git && cd todo && npm i && ./run
 ```
 
 
