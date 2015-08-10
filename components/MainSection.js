@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import TodoItem from './TodoItem';
 import Footer from './Footer';
 import { SHOW_ALL, SHOW_MARKED, SHOW_UNMARKED } from '../constants/TodoFilters';
+import firebase from '../utils/Firebase';
 
 const TODO_FILTERS = {
   [SHOW_ALL]: () => true,
@@ -66,6 +67,10 @@ export default class MainSection extends Component {
     }
   }
 
+  logout() {
+    firebase.unauth();
+  }
+
   renderFooter(markedCount) {
     const { todos } = this.props;
     const { filter } = this.state;
@@ -73,11 +78,15 @@ export default class MainSection extends Component {
 
     if (todos.length) {
       return (
-        <Footer markedCount={markedCount}
-                unmarkedCount={unmarkedCount}
-                filter={filter}
-                onClearMarked={::this.handleClearMarked}
-                onShow={::this.handleShow} />
+        <div>
+          <Footer markedCount={markedCount}
+                  unmarkedCount={unmarkedCount}
+                  filter={filter}
+                  onClearMarked={::this.handleClearMarked}
+                  onShow={::this.handleShow} />
+
+          <button onClick={this.logout}>logout</button>
+        </div>
       );
     }
   }

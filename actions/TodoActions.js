@@ -40,3 +40,9 @@ export function clearMarked() {
     type: types.CLEAR_MARKED
   };
 }
+
+export function login() {
+  return {
+    type: types.LOGIN
+  };
+}

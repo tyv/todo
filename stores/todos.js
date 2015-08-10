@@ -1,19 +1,35 @@
-import { ADD_TODO, DELETE_TODO, EDIT_TODO, MARK_TODO, MARK_ALL, CLEAR_MARKED } from '../constants/ActionTypes';
+import { ADD_TODO, DELETE_TODO, EDIT_TODO, MARK_TODO, MARK_ALL, CLEAR_MARKED, LOGIN } from '../constants/ActionTypes';
+import isLogged from '../utils/isLogged';
 
-const initialState = [{
-  text: 'Use Redux',
-  marked: false,
-  id: 0
-}];
+const initialState = {
+  login: { logged: Boolean(isLogged()) },
+  list: [{
+    text: 'Use Redux',
+    marked: false,
+    id: 0
+  }]
+};
 
 export default function todos(state = initialState, action) {
+  let newState;
+
   switch (action.type) {
+  case 'LOGIN':
+    newState = {...state, login: { logged: true }};
+
+    console.log(newState)
+    return newState;
+
   case ADD_TODO:
-    return [{
-      id: (state.length === 0) ? 0 : state[0].id + 1,
-      marked: false,
-      text: action.text
-    }, ...state];
+    newState = {
+      ...state,
+      list: [{
+        id: (state.list.length === 0) ? 0 : state.list[0].id + 1,
+        marked: false,
+        text: action.text
+      }, ...state.list]
+    };
+    return newState;
 
   case DELETE_TODO:
     return state.filter(todo =>

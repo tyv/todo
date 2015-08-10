@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "classnames": "^2.1.2",
+    "firebase": "^2.2.9",
     "react": "^0.13.3",
     "redux": "^0.12.0"
   },
