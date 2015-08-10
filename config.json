@@ -1,5 +1,0 @@
-{
-    "mongoose": {
-        "uri": "mongodb://localhost/todo"
-    }
-}
