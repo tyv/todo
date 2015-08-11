@@ -1,30 +1,29 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import { Connector } from 'redux/react';
+import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Login from '../components/Login';
-import MainSection from '../components/MainSection';
 import * as TodoActions from '../actions/TodoActions';
 
-export default class TodoApp extends Component {
-  render() {
-    return (
-      <Connector select={state => ({ todos: state.todos.list, login: state.todos.login })}>
-        {this.renderChild}
-      </Connector>
-    );
-  }
 
-  renderChild({ todos, login, dispatch }) {
-    console.log('>>', todos);
+class TodoApp extends Component {
+  render() {
+    const { todos, logged, dispatch } = this.props;
     const actions = bindActionCreators(TodoActions, dispatch);
     const app = (
       <div>
-        <Header addTodo={actions.addTodo} />
-        <MainSection todos={todos} actions={actions} />
+        <Header {...actions} />
       </div>
     );
-
-    return login.logged ? app : <Login login={actions.login}/>;
+    return logged.status ? app : <Login {...actions}/>;
   }
-}
+};
+
+function select(state) {
+  return {
+    todos: state.todos,
+    logged: state.logged
+  };
+};
+
+export default connect(select)(TodoApp);
