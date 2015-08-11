@@ -4,9 +4,25 @@ import firebase from '../utils/Firebase';
 export function login() {
     return dispatch => {
         firebase.authWithOAuthPopup('facebook', (e, payload) => {
-              dispatch(e ? loginError(e) : loginSuccess(payload));
+              if (e) {
+                dispatch(loginError(e));
+              } else {
+                dispatch(loginSuccess(payload));
+                listByUserTransaction(payload.uid);
+              }
         });
     };
+};
+
+function listByUserTransaction(user) {
+    let users = firebase.child(user);
+
+    users.set({ list: [] });
+
+    users.on('value', dataSnapshot => {
+        console.log(dataSnapshot.val());
+    });
+
 };
 
 function loginError(error) {
