@@ -1,7 +1,8 @@
 import * as types from '../constants/ActionTypes';
+import isLogged from '../utils/isLogged';
 
 const initialState = {
-  status: false
+  status: isLogged()
 };
 
 export default function logged(state = initialState, action) {
