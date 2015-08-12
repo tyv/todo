@@ -15,9 +15,9 @@ export function login() {
 };
 
 function listByUserTransaction(user) {
-    let users = firebase.child(user);
+    let users = firebase.child('users');
 
-    users.set({ list: [] });
+    users.set({ [user]: { todos: '' } });
 
     users.on('value', dataSnapshot => {
         console.log(dataSnapshot.val());
