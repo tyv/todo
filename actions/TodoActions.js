@@ -1,4 +1,5 @@
 import * as types from '../constants/ActionTypes';
+import * as messages from '../constants/Messages';
 import firebase from '../utils/Firebase';
 
 export function login() {
@@ -8,27 +9,47 @@ export function login() {
                 dispatch(loginError(e));
               } else {
                 dispatch(loginSuccess(payload));
-                listByUserTransaction(payload.uid);
+                listByUser(payload.uid, dispatch);
               }
         });
     };
 };
 
-function listByUserTransaction(user) {
-    let users = firebase.child('users');
+export function listByUser(user) {
+    return dispatch => {
+      let users = firebase.child('users');
 
-    users.set({ [user]: { todos: '' } });
-
-    users.on('value', dataSnapshot => {
-        console.log(dataSnapshot.val());
-    });
-
+      users.once('value', dataSnapshot => {
+          const val = dataSnapshot.val();
+          if (val) { // TODO: dispatch(val ? funca(..) : funcb(..))
+              dispatch(onUserTodoList(val[user]));
+          } else {
+              users.set({ // TODO: error handling
+                  [user]: { todos: '' }
+              });
+          }
+      });
+    };
 };
+
+export function addTodo(text, uid) {
+    return dispatch => {
+      let user = firebase.child('users/' + uid);
+      user.push(text, e => { if (e) console.log(e); });
+    };
+};
+
+function onTodoAdded(text) {
+  return {
+    type: types.ADD_TODO,
+    text
+  }
+}
 
 function loginError(error) {
   return {
     type: types.LOGIN_ERROR,
-    error
+    error: { message: messages.LOGIN_ERROR, data: error }
   };
 };
 
@@ -39,4 +60,9 @@ function loginSuccess(data) {
   };
 };
 
-
+function onUserTodoList(data) {
+  return {
+    type: types.USER_TODOS,
+    data
+  };
+};

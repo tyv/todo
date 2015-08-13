@@ -11,7 +11,6 @@ export default function logged(state = initialState, action) {
   switch (action.type) {
 
     case types.LOGIN_SUCCESS:
-      console.log('STORE LOGIN S');
       return { status: action.data };
 
     default:
