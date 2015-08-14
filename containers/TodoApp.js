@@ -3,24 +3,45 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Login from '../components/Login';
+import List from '../components/List';
 import Add from '../components/Add';
 import * as TodoActions from '../actions/TodoActions';
 
 
 class TodoApp extends Component {
-
-  render() {
+  componentWillMount() {
     const { todos, logged, dispatch } = this.props;
-    const actions = bindActionCreators(TodoActions, dispatch);
-    const app = (
+    this.actions = bindActionCreators(TodoActions, dispatch);
+
+    if (logged.status
+          && !Object.keys(todos.list).length) {
+      this.actions.getListByUser(logged.status.uid);
+    }
+  }
+
+  renderLogin(actions) {
+    return <Login {...actions}/>;
+  }
+
+  renderApp(actions, logged, todos) {
+    return (
       <div>
         <Header {...actions} />
         <Add uid={logged.status.uid} {...actions} />
+        <List list={todos.list} />
       </div>
     );
+  }
 
-    console.log(todos);
-    return logged.status ? app : <Login {...actions}/>;
+  render() {
+    const { todos, logged } = this.props;
+    const actions = this.actions;
+
+    if (logged.status) {
+      return this.renderApp(actions, logged, todos);
+    } else {
+      return this.renderLogin(actions);
+    }
   }
 };
 

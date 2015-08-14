@@ -1,7 +1,7 @@
 import * as types from '../constants/ActionTypes';
 
 const initialState = {
-  todos: []
+  list: {}
 };
 
 export default function todos(state = initialState, action) {
@@ -10,13 +10,15 @@ export default function todos(state = initialState, action) {
   switch (action.type) {
 
     case types.USER_TODOS:
-      return action.data;
-
-    case types.ADD_TODO:
       return {
         ...state,
-        todos: [action.text, ...state.todos]
+        list: action.data
       };
+
+    case types.ADD_TODO:
+      let newState = {...state};
+      newState.list[action.key] = action.text;
+      return newState;
 
     default:
       return state;

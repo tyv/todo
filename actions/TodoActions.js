@@ -9,13 +9,13 @@ export function login() {
                 dispatch(loginError(e));
               } else {
                 dispatch(loginSuccess(payload));
-                listByUser(payload.uid, dispatch);
+                getListByUser(payload.uid, dispatch);
               }
         });
     };
 };
 
-export function listByUser(user) {
+export function getListByUser(user) {
     return dispatch => {
       let users = firebase.child('users');
 
@@ -25,7 +25,7 @@ export function listByUser(user) {
               dispatch(onUserTodoList(val[user]));
           } else {
               users.set({ // TODO: error handling
-                  [user]: { todos: '' }
+                  [user]: {}
               });
           }
       });
@@ -33,16 +33,27 @@ export function listByUser(user) {
 };
 
 export function addTodo(text, uid) {
+  console.log('addTodo');
     return dispatch => {
       let user = firebase.child('users/' + uid);
-      user.push(text, e => { if (e) console.log(e); });
+
+      let push = user.push(text, (e) => {
+        if (e) { console.log(e); }   // TODO: handle error
+      });
+
+      user.once('value', payload => {
+        console.log('once');
+        const key = push.key();
+        dispatch(onTodoAdded(payload.val()[key], key));
+      });
     };
 };
 
-function onTodoAdded(text) {
+function onTodoAdded(text, key) {
   return {
     type: types.ADD_TODO,
-    text
+    text,
+    key
   }
 }
 

@@ -14,7 +14,6 @@ export default function logged(state = initialState, action) {
       return { status: action.data };
 
     default:
-      console.log(action);
       return state;
   }
 }
