@@ -12,27 +12,27 @@ export default class Footer extends Component {
 
   renderFooter() {
     const list = this.props.list;
-    const undone = Object
-                    .keys(this.props.list)
-                      .filter(key => !list[key].done)
-                        .length;
+    const keys = Object.keys(this.props.list);
+    const undone = keys.filter(key => !list[key].done).length;
 
     return (
       <div>
         {this.renderUndone(undone)}
         {'---====---'}
-        {this.renderSelectControl(undone)}
+        {this.renderSelectControl(undone, keys)}
       </div>
     );
   }
 
-  renderSelectControl(undone) {
-    return (
-      <span onClick={this.onSelectControlClick.bind(this, undone)}
-        className="footer__select-control">
-        {undone ? 'Mark all completed' : 'Mark all undone'}
-      </span>
-    );
+  renderSelectControl(undone, list) {
+    if (list.length) {
+      return (
+        <span onClick={this.onSelectControlClick.bind(this, undone)}
+          className="footer__select-control">
+          {undone ? 'Mark all completed' : 'Mark all undone'}
+        </span>
+      );
+    }
   }
 
   renderUndone(undone) {
