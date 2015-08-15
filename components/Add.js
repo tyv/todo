@@ -13,7 +13,8 @@ export default class Add extends Component {
 
   };
 
-  onAdd() {
+  onAdd(e) {
+    e.preventDefault();
     this.props.addTodo(this.state.text, this.props.uid);
   }
 
@@ -23,16 +24,15 @@ export default class Add extends Component {
 
   render() {
     return (
-      <div className='add'>
+      <form
+        onSubmit={::this.onAdd}
+        className='add'>
         <input
           placeholder='placeholder' //TODO: props
           onChange={::this.onChange}
           value={this.state.text} />
-        <button
-          onClick={::this.onAdd}>
-            Add
-        </button>
-      </div>
+        <button>Add</button>
+      </form>
     );
   }
 }
