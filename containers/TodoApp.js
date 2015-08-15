@@ -28,7 +28,7 @@ class TodoApp extends Component {
       <div>
         <Header {...actions} />
         <Add uid={logged.status.uid} {...actions} />
-        <List list={todos.list} />
+        <List list={todos.list} {...actions} />
       </div>
     );
   }

@@ -6,10 +6,31 @@ export default class Todo extends Component {
 
   };
 
+  onDeleteClick() {
+    this.props.deleteTodo(this.props.storeKey);
+  }
+
+  onStatusChangeClick() {
+    const {changeTodoStatus, todo, storeKey} = this.props;
+    changeTodoStatus(storeKey, !todo.done);
+  }
+
   render() {
+    const {todo, key} = this.props;
+
     return (
-      <li key={this.props.key} className='list__item'>
-        {this.props.todo}
+      <li key={key} className='list__item'>
+        <input
+          onChange={::this.onStatusChangeClick}
+          type="checkbox"
+          checked={todo.done} />
+
+        {todo.text}
+
+        <button
+          onClick={::this.onDeleteClick}>
+            [ delete ]
+        </button>
       </li>
     );
   }

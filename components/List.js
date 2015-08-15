@@ -8,17 +8,24 @@ export default class List extends Component {
   };
 
   renderList() {
-    const list = this.props.list;
+    const {list, deleteTodo, changeTodoStatus} = this.props;
 
     return Object.keys(list).map((key, i) => {
-      return <Todo key={i} todo={list[key]} />;
+      return (
+        <Todo
+          key={i}
+          storeKey={key}
+          todo={list[key]}
+          changeTodoStatus={changeTodoStatus}
+          deleteTodo={deleteTodo} />
+        );
     });
   }
 
   render() {
     return (
       <ol className='list'>
-        {::this.renderList()}
+        {this.renderList()}
       </ol>
     );
   }

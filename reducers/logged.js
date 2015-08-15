@@ -9,7 +9,6 @@ export default function logged(state = initialState, action) {
   let newState;
 
   switch (action.type) {
-
     case types.LOGIN_SUCCESS:
       return { status: action.data };
 

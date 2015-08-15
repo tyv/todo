@@ -1,7 +1,25 @@
 import * as types from '../constants/ActionTypes';
 
 const initialState = {
-  list: {}
+  //list: {}
+  list: {
+    'a1': {
+      text: 'aa1',
+      done: false
+    },
+    'a2': {
+      text: 'aa2',
+      done: true
+    },
+    'a3': {
+      text: 'aa3',
+      done: false
+    },
+    'a4': {
+      text: 'aa4',
+      done: false
+    }
+  }
 };
 
 export default function todos(state = initialState, action) {
@@ -16,8 +34,21 @@ export default function todos(state = initialState, action) {
       };
 
     case types.ADD_TODO:
-      let newState = {...state};
-      newState.list[action.key] = action.text;
+      newState = {...state};
+      newState.list[action.key] = {
+        text: action.text,
+        done: false
+      };
+      return newState;
+
+    case types.DELETE_TODO:
+      newState = {...state};
+      delete newState.list[action.key];
+      return newState;
+
+    case types.CHANGE_TODO_STATUS:
+      newState = {...state};
+      newState.list[action.key].done = action.status;
       return newState;
 
     default:

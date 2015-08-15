@@ -49,6 +49,37 @@ export function addTodo(text, uid) {
     };
 };
 
+export function deleteTodo(key) {
+  return dispatch => {
+    // TODO: saving to Firebase
+
+    dispatch(onTodoDeleted(key));
+  }
+}
+
+export function changeTodoStatus(key, status) {
+  return dispatch => {
+    // TODO: saving to Firebase
+    //
+    dispatch(onTodoStatusChanges(key, status));
+  }
+}
+
+function onTodoStatusChanges(key, status) {
+  return {
+    type: types.CHANGE_TODO_STATUS,
+    key,
+    status
+  }
+}
+
+function onTodoDeleted(key) {
+  return {
+    type: types.DELETE_TODO,
+    key
+  }
+}
+
 function onTodoAdded(text, key) {
   return {
     type: types.ADD_TODO,
