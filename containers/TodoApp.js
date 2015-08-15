@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Login from '../components/Login';
 import List from '../components/List';
+import Footer from '../components/Footer';
 import Add from '../components/Add';
 import * as TodoActions from '../actions/TodoActions';
 
@@ -31,6 +32,7 @@ class TodoApp extends Component {
         <Header name={name} {...actions} />
         <Add uid={logged.status.uid} {...actions} />
         <List list={todos.list} {...actions} />
+        <Footer list={todos.list} {...actions} />
       </div>
     );
   }
