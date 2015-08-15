@@ -51,6 +51,16 @@ export default function todos(state = initialState, action) {
       newState.list[action.key].done = action.status;
       return newState;
 
+    case types.CHANGE_TODOS_STATUS:
+      newState = {...state};
+      Object
+        .keys(newState.list)
+          .forEach(key => {
+            newState.list[key].done = action.status;
+          });
+      console.log(newState);
+      return newState;
+
     default:
       return state;
   }

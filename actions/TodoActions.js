@@ -42,7 +42,6 @@ export function addTodo(text, uid) {
       });
 
       user.once('value', payload => {
-        console.log('once');
         const key = push.key();
         dispatch(onTodoAdded(payload.val()[key], key));
       });
@@ -65,10 +64,25 @@ export function changeTodoStatus(key, status) {
   }
 }
 
+export function changeTodosStatus(status) {
+  return dispatch => {
+    // TODO: saving to Firebase
+    //
+    dispatch(onTodosStatusChanges(status));
+  }
+}
+
 function onTodoStatusChanges(key, status) {
   return {
     type: types.CHANGE_TODO_STATUS,
     key,
+    status
+  }
+}
+
+function onTodosStatusChanges(status) {
+  return {
+    type: types.CHANGE_TODOS_STATUS,
     status
   }
 }

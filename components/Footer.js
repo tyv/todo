@@ -6,15 +6,36 @@ export default class Footer extends Component {
 
   };
 
-  renderStatus() {
+  onSelectControlClick(undone) {
+    this.props.changeTodosStatus(Boolean(undone));
+  }
+
+  renderFooter() {
     const list = this.props.list;
     const undone = Object
                     .keys(this.props.list)
-                    .filter(key => !list[key].done)
-                    .length;
+                      .filter(key => !list[key].done)
+                        .length;
 
-    console.log('undone', undone);
+    return (
+      <div>
+        {this.renderUndone(undone)}
+        {'---====---'}
+        {this.renderSelectControl(undone)}
+      </div>
+    );
+  }
 
+  renderSelectControl(undone) {
+    return (
+      <span onClick={this.onSelectControlClick.bind(this, undone)}
+        className="footer__select-control">
+        {undone ? 'Mark all completed' : 'Mark all undone'}
+      </span>
+    );
+  }
+
+  renderUndone(undone) {
     return (
       <span className='footer__undone'>
         {undone ? (undone + ' items left') : 'all done!'}
@@ -25,10 +46,7 @@ export default class Footer extends Component {
   render() {
     return (
       <footer className='footer'>
-        {
-          this.renderStatus()
-          //this.renderCheckAllControl();
-        }
+        {this.renderFooter()}
       </footer>
     );
   }

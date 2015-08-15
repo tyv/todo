@@ -20,12 +20,15 @@ export default class Todo extends Component {
 
     return (
       <li key={key} className='list__item'>
-        <input
-          onChange={::this.onStatusChangeClick}
-          type="checkbox"
-          checked={todo.done} />
+        <label>
+          <input
+            onChange={::this.onStatusChangeClick}
+            type="checkbox"
+            checked={todo.done} />
 
-        {todo.text}
+            {todo.text}
+
+          </label>
 
         <button
           onClick={::this.onDeleteClick}>
