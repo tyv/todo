@@ -24,9 +24,11 @@ class TodoApp extends Component {
   }
 
   renderApp(actions, logged, todos) {
+    const name = logged.status[logged.status.provider].displayName;
+
     return (
       <div>
-        <Header {...actions} />
+        <Header name={name} {...actions} />
         <Add uid={logged.status.uid} {...actions} />
         <List list={todos.list} {...actions} />
       </div>
