@@ -17,11 +17,24 @@ class TodoApp extends Component {
     if (logged.status
           && !Object.keys(todos.list).length) {
       this.actions.getListByUser(logged.status.uid);
+      this.setState({ loading: true });
+    } else {
+      this.setState({ loading: false });
     }
   }
 
   renderLogin(actions) {
     return <Login {...actions}/>;
+  }
+
+  rednerList(list, actions) {
+   return <List list={list} {...actions} />
+  }
+
+  renderLoading() {
+   return (
+      <span className='loading'>Loading&hellip;</span>
+    );
   }
 
   renderApp(actions, logged, todos) {
@@ -31,7 +44,7 @@ class TodoApp extends Component {
       <div>
         <Header name={name} {...actions} />
         <Add uid={logged.status.uid} {...actions} />
-        <List list={todos.list} {...actions} />
+        { this.state.loading ? this.renderLoading() : this.rednerList(todos.list, actions) }
         <Footer list={todos.list} {...actions} />
       </div>
     );
