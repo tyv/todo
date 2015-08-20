@@ -19,7 +19,7 @@ export default class Todo extends Component {
     const {todo, key} = this.props;
 
     return (
-      <li key={key} className='list__item'>
+      <li className='list__item'>
         <label>
           <input
             onChange={::this.onStatusChangeClick}

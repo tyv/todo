@@ -11,24 +11,20 @@ import * as TodoActions from '../actions/TodoActions';
 
 class TodoApp extends Component {
   componentWillMount() {
-    const { todos, logged, dispatch } = this.props;
+    const { todos, logged, loading, dispatch } = this.props;
     this.actions = bindActionCreators(TodoActions, dispatch);
 
-    if (logged.status
-          && !Object.keys(todos.list).length) {
+    if (logged.status && !loading) {
       this.actions.getListByUser(logged.status.uid);
-      this.setState({ loading: true });
-    } else {
-      this.setState({ loading: false });
     }
   }
 
   renderLogin(actions) {
-    return <Login {...actions}/>;
+    return <Login {...this.actions}/>;
   }
 
-  rednerList(list, actions) {
-   return <List list={list} {...actions} />
+  renderList() {
+    return <List list={this.props.todos.list} {...this.actions} />
   }
 
   renderLoading() {
@@ -37,33 +33,36 @@ class TodoApp extends Component {
     );
   }
 
-  renderApp(actions, logged, todos) {
+  renderApp() {
+    const {logged, todos} = this.props;
+    const list = todos.list;
+    const actions = this.actions;
     const name = logged.status[logged.status.provider].displayName;
-
     return (
       <div>
         <Header name={name} {...actions} />
         <Add uid={logged.status.uid} {...actions} />
-        { this.state.loading ? this.renderLoading() : this.rednerList(todos.list, actions) }
-        <Footer list={todos.list} {...actions} />
+        {todos.loading && this.renderLoading()}
+        {Boolean(Object.keys(list).length) && this.renderList()}
+        <Footer list={list} {...actions} />
       </div>
     );
   }
 
   render() {
-    const { todos, logged } = this.props;
     const actions = this.actions;
 
-    if (logged.status) {
-      return this.renderApp(actions, logged, todos);
+    if (this.props.logged) {
+      return this.renderApp();
     } else {
-      return this.renderLogin(actions);
+      return this.renderLogin();
     }
   }
 };
 
 function select(state) {
   return {
+    loading: state.loading,
     todos: state.todos,
     logged: state.logged
   };

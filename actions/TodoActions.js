@@ -17,29 +17,39 @@ export function login() {
 
 export function getListByUser(user) {
     return dispatch => {
-      let users = firebase.child('users');
+      dispatch(setLoading());
 
+      let users = firebase.child('users');
       users.once('value', dataSnapshot => {
           const val = dataSnapshot.val();
           if (val) { // TODO: dispatch(val ? funca(..) : funcb(..))
               dispatch(onUserTodoList(val[user]));
           } else {
-              users.set({ // TODO: error handling
-                  [user]: {}
-              });
+              users.set(
+                {
+                    [user]: {}
+                },
+                () => dispatch(onUserTodoList())
+              );
           }
       });
     };
 };
 
 export function addTodo(text, uid) {
-  console.log('addTodo');
     return dispatch => {
-      let user = firebase.child('users/' + uid);
+      dispatch(setLoading());
 
-      let push = user.push(text, (e) => {
-        if (e) { console.log(e); }   // TODO: handle error
-      });
+      let user = firebase.child('users/' + uid);
+      let push = user.push(
+        {
+          text,
+          done: false
+        },
+        (e) => {
+          if (e) { console.log(e); }   // TODO: handle error
+        }
+      );
 
       user.once('value', payload => {
         const key = push.key();
@@ -50,27 +60,43 @@ export function addTodo(text, uid) {
 
 export function deleteTodo(key) {
   return dispatch => {
-    // TODO: saving to Firebase
-
-    dispatch(onTodoDeleted(key));
-  }
+    dispatch(setLoading());
+    firebase
+      .child('users/' + firebase.getAuth().uid + '/' + key)
+      .remove(() => dispatch(onTodoDeleted(key)));
+  };
 }
 
 export function changeTodoStatus(key, status) {
   return dispatch => {
-    // TODO: saving to Firebase
-    //
-    dispatch(onTodoStatusChanges(key, status));
-  }
+    dispatch(setLoading());
+    firebase
+      .child('users/' + firebase.getAuth().uid + '/' + key)
+      .update(
+        { done: status },
+        () => dispatch(dispatch(onTodoStatusChanges(key, status)))
+      );
+  };
 }
 
 export function changeTodosStatus(status) {
   return dispatch => {
-    // TODO: saving to Firebase
-    //
-    dispatch(onTodosStatusChanges(status));
+    dispatch(setLoading());
+    let todosUpdated = {};
+    const todosRef = firebase.child('users/' + firebase.getAuth().uid);
+
+      todosRef.once('value', todos => {
+        todos.forEach(
+          todo => {
+            todosUpdated[todo.key()] = {...todo.val(), done: status};
+          }
+        );
+        dispatch(setLoading());
+        todosRef.update(todosUpdated, () => dispatch(onTodosStatusChanges(status)));
+      });
   }
 }
+
 
 function onTodoStatusChanges(key, status) {
   return {
@@ -120,5 +146,11 @@ function onUserTodoList(data) {
   return {
     type: types.USER_TODOS,
     data
+  };
+};
+
+function setLoading() {
+  return {
+    type: types.USER_TODOS_LOAD
   };
 };

@@ -18,7 +18,7 @@ module.exports = {
     new webpack.NoErrorsPlugin()
   ],
   resolve: {
-    extensions: ['', '.js']
+    extensions: ['', '.js', '.styl'],
   },
   module: {
     loaders: [{
@@ -26,8 +26,20 @@ module.exports = {
       loaders: ['react-hot', 'babel'],
       exclude: /node_modules/
     }, {
-      test: /\.css?$/,
-      loaders: ['style', 'raw']
+      test: /\.styl$/,
+      loaders: [
+        'style-loader',
+        'css',
+        'autoprefixer?browsers=last 2 version',
+        'stylus'
+      ]
+    }, {
+      test: /\.css$/,
+        loaders: [
+          'style-loader',
+          'css',
+          'autoprefixer?browsers=last 2 version'
+        ]
     }]
   }
 };
