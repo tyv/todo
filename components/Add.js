@@ -27,11 +27,19 @@ export default class Add extends Component {
       <form
         onSubmit={::this.onAdd}
         className='add'>
-        <input
-          placeholder='placeholder' //TODO: props
-          onChange={::this.onChange}
-          value={this.state.text} />
-        <button>Add</button>
+        <div className='add__col'>
+          <input
+            className='add__input custom-input custom-input_type_text'
+            placeholder='placeholder' //TODO: props
+            onChange={::this.onChange}
+            value={this.state.text} />
+        </div>
+        <div className='add__col'>
+          <button
+            className='add__submit custom-input custom-input_type_button custom-input_action_submit'>
+              Add
+          </button>
+        </div>
       </form>
     );
   }

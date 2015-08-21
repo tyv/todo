@@ -39,7 +39,7 @@ class TodoApp extends Component {
     const actions = this.actions;
     const name = logged.status[logged.status.provider].displayName;
     return (
-      <div>
+      <div className={'todoapp' + (todos.loading ? ' todoapp_loading' : '')}>
         <Header name={name} {...actions} />
         <Add uid={logged.status.uid} {...actions} />
         {todos.loading && this.renderLoading()}

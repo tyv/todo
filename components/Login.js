@@ -5,9 +5,9 @@ export default class Login extends Component {
   render() {
     return (
       <div className='login'>
-        <h1>Login with</h1>
+        <h1 className='login__title'>Login with</h1>
         <button
-          className="facebook"
+          className="oauth-btn oauth-btn_facebook"
           onClick={this.props.login}>
             Facebook
         </button>

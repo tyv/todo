@@ -18,9 +18,8 @@ export default class Footer extends Component {
       let undone = keys.filter(key => !list[key].done).length;
 
       return (
-        <div>
+        <div className='footer__layout'>
           {this.renderUndone(undone)}
-          {'---====---'}
           {this.renderSelectControl(undone)}
         </div>
       );
@@ -31,7 +30,7 @@ export default class Footer extends Component {
   renderSelectControl(undone) {
     return (
       <span onClick={this.onSelectControlClick.bind(this, undone)}
-        className="footer__select-control">
+        className="footer__markall">
         {undone ? 'Mark all completed' : 'Mark all undone'}
       </span>
     );
@@ -39,7 +38,7 @@ export default class Footer extends Component {
 
   renderUndone(undone) {
     return (
-      <span className='footer__undone'>
+      <span className='footer__info'>
         {undone ? (undone + ' items left') : 'all done!'}
       </span>
     );

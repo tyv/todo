@@ -1,0 +1,44 @@
+.todos
+    &__item
+        position relative
+
+    &__item:nth-child(odd)
+        background #F4F7FA
+
+    &__text
+        display block
+
+        padding 15px 20px
+
+    &__cbox:checked + &__text
+        color #999
+        text-decoration line-through
+
+    &__delete
+        position absolute
+        top 50%
+        right 45px
+
+        margin-top -8px
+
+        opacity 0
+        transition opacity 0.3s ease-in
+
+    &__delete:after
+        font-size 18px
+
+        line-height 0
+
+        color #bfbbbb
+
+        content '×'
+
+    &__delete:hover:after
+        color inherit
+
+    &__item.dragging
+        pointer-events none
+
+    &__item:hover &__delete,
+    &__item:hover .drag
+        opacity 1

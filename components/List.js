@@ -24,7 +24,7 @@ export default class List extends Component {
 
   render() {
     return (
-      <ol className='list'>
+      <ol className='todos line'>
         {this.renderList()}
       </ol>
     );

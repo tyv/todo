@@ -7,9 +7,9 @@ export default class Header extends Component {
 
   render() {
     return (
-      <header className='header'>
-          <h1>
-            TODO list for {this.props.name}
+      <header className='header line'>
+          <h1 className="header__title">
+            Todos for {this.props.name}
           </h1>
       </header>
     );
