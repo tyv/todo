@@ -22,7 +22,7 @@ export function getListByUser(user) {
       let users = firebase.child('users');
       users.once('value', dataSnapshot => {
           const val = dataSnapshot.val();
-          if (val) { // TODO: dispatch(val ? funca(..) : funcb(..))
+          if (val && val[user]) { // TODO: dispatch(val ? funca(..) : funcb(..))
               dispatch(onUserTodoList(val[user]));
           } else {
               users.set(
