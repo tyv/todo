@@ -10,7 +10,7 @@ export default class List extends Component {
   renderList() {
     const {list, deleteTodo, changeTodoStatus} = this.props;
 
-    return Object.keys(list).map((key, i) => {
+    return Object.keys(list).reverse().map((key, i) => {
       return (
         <Todo
           key={i}
