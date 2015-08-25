@@ -2,7 +2,31 @@
     &__item
         position relative
 
-    &__item:nth-child(odd)
+    &__item_drag &__text
+        background #060 !important
+
+
+    &__item_drag-before:before,
+    &__item_drag-after:after
+        position absolute
+        left 0
+        z-index 1
+
+        width 100%
+        height 2px
+
+        content ''
+        pointer-events none
+
+        background red
+
+    &__item_drag-before:before
+        top -1px
+
+    &__item_drag-after:after
+        bottom -1px
+
+    &__item:nth-child(odd) &__text
         background #F4F7FA
 
     &__text
@@ -35,9 +59,6 @@
 
     &__delete:hover:after
         color inherit
-
-    &__item.dragging
-        pointer-events none
 
     &__item:hover &__delete,
     &__item:hover .drag
