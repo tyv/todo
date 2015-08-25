@@ -12,6 +12,9 @@ export default function logged(state = initialState, action) {
     case types.LOGIN_SUCCESS:
       return { status: action.data };
 
+    case types.LOGOUT:
+      return { status: false };
+
     default:
       return state;
   }

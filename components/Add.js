@@ -11,11 +11,12 @@ export default class Add extends Component {
 
   static propTypes = {
 
-  };
+  }
 
   onAdd(e) {
     e.preventDefault();
     this.props.addTodo(this.state.text, this.props.uid);
+    this.setState({ text: '' });
   }
 
   onChange(e) {

@@ -8,10 +8,17 @@ export function login() {
               if (e) {
                 dispatch(loginError(e));
               } else {
-                dispatch(loginSuccess(payload));
-                getListByUser(payload.uid, dispatch);
+                dispatch(onLogin(payload));
+                dispatch(getListByUser(payload.uid));
               }
         });
+    };
+};
+
+export function logout() {
+    return dispatch => {
+      firebase.unauth();
+      dispatch(onLogout());
     };
 };
 
@@ -135,10 +142,16 @@ function loginError(error) {
   };
 };
 
-function loginSuccess(data) {
+function onLogin(data) {
   return {
     type: types.LOGIN_SUCCESS,
     data
+  };
+};
+
+function onLogout() {
+  return {
+    type: types.LOGOUT
   };
 };
 

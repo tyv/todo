@@ -49,6 +49,12 @@ export default function todos(state = initialState, action) {
           });
       return newState;
 
+    case types.LOGOUT:
+      return {
+        loading: false,
+        list: {}
+      };
+
     default:
       return state;
   }

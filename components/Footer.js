@@ -30,7 +30,7 @@ export default class Footer extends Component {
   renderSelectControl(undone) {
     return (
       <span onClick={this.onSelectControlClick.bind(this, undone)}
-        className="footer__markall">
+        className="footer__markall pseudo-link">
         {undone ? 'Mark all completed' : 'Mark all undone'}
       </span>
     );

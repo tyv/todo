@@ -38,6 +38,7 @@ class TodoApp extends Component {
     const list = todos.list;
     const actions = this.actions;
     const name = logged.status[logged.status.provider].displayName;
+
     return (
       <div className={'todoapp' + (todos.loading ? ' todoapp_loading' : '')}>
         <Header name={name} {...actions} />
@@ -52,11 +53,11 @@ class TodoApp extends Component {
   render() {
     const actions = this.actions;
 
-    if (this.props.logged) {
-      return this.renderApp();
-    } else {
-      return this.renderLogin();
-    }
+    return this[
+            this.props.logged.status ?
+              'renderApp' :
+              'renderLogin'
+            ]();
   }
 };
 

@@ -1,5 +1,6 @@
 export const LOGIN_ERROR = 'LOGIN_ERROR';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGOUT = 'LOGOUT';
 
 export const USER_TODOS = 'USER_TODOS';
 export const USER_TODOS_LOAD = 'USER_TODOS_LOAD';
