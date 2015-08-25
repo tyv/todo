@@ -102,30 +102,135 @@ export function changeTodosStatus(status) {
         todosRef.update(todosUpdated, () => dispatch(onTodosStatusChanges(status)));
       });
   }
-}
+};
 
+export function changeTodoPosition(sourceTodoId, direction, targetTodoId) {
+
+  return dispatch => {
+    const todosRef = firebase.child('users/' + firebase.getAuth().uid);
+
+    let linkedList = {};
+
+    todosRef.once('value', todos => {
+      let prev = null;
+      todos.forEach(
+        todo => {
+          let key = todo.key();
+
+          if (!linkedList.start) linkedList.start = key;
+
+          // Creating Doubly-linked list https://en.wikipedia.org/wiki/Doubly-linked_list
+          linkedList[key] = {...todo.val(), key: key, before: prev, after: null};
+          if (prev) prev.after = linkedList[key];
+          prev = linkedList[key];
+        }
+      );
+
+      let item = linkedList[linkedList.start];
+
+      let source = linkedList[sourceTodoId];
+      let target = linkedList[targetTodoId][direction];
+
+      let next;
+      let proceed = false;
+      let newList = {};
+      let foundTarget = false;
+      let listDiredtion = 'after';
+
+      while (item) {
+
+        if (proceed) {
+
+          if (item[listDiredtion]) {
+            next = { text: item[listDiredtion].text, done: item[listDiredtion].done };
+            item[listDiredtion].text = item.text;
+            item[listDiredtion].done = item.done;
+            item.text = next.text;
+            item.done = next.done;
+          }
+
+          item = item[listDiredtion];
+          continue;
+
+        } else {
+
+          if (item === target) {
+            if (foundTarget) {
+
+              if (item[listDiredtion]) {
+                next = { text: item[listDiredtion].text, done: item[listDiredtion].done };
+                item[listDiredtion].text = item.text;
+                item[listDiredtion].done = item.done;
+                item.text = next.text;
+                item.done = next.done;
+              }
+              proceed = true;
+            }
+
+            foundTarget = true;
+            item = item[listDiredtion];
+            continue;
+          }
+
+          if (item === source) {
+            if (foundTarget) listDiredtion = 'before';
+            if (item[listDiredtion]) {
+              next = { text: item[listDiredtion].text, done: item[listDiredtion].done };
+              item[listDiredtion].text = item.text;
+              item[listDiredtion].done = item.done;
+              item.text = next.text;
+              item.done = next.done;
+            }
+            item = item[listDiredtion];
+            proceed = true;
+            continue;
+          }
+        }
+
+        item = item[listDiredtion];
+      }
+
+      item = linkedList[linkedList.start];
+
+      while (item) {
+        newList[item.key] = { text: item.text, done: item.done };
+        item = item.after;
+      }
+
+      todosRef.update(newList, (e) => {
+        console.log('complete:', e);
+      });
+      // // let savedTarget = linkedList[targetTodoId][direction];
+      // linkedList[targetTodoId][direction] = linkedList[sourceTodoId];
+
+
+      // dispatch(setLoading());
+      // todosRef.update(todosUpdated, () => dispatch(onTodosStatusChanges(status)));
+    });
+  }
+};
 
 function onTodoStatusChanges(key, status) {
   return {
     type: types.CHANGE_TODO_STATUS,
     key,
     status
-  }
-}
+  };
+};
 
 function onTodosStatusChanges(status) {
   return {
     type: types.CHANGE_TODOS_STATUS,
     status
   }
-}
+};
 
 function onTodoDeleted(key) {
   return {
     type: types.DELETE_TODO,
     key
   }
-}
+};
 
 function onTodoAdded(text, key) {
   return {
@@ -133,7 +238,7 @@ function onTodoAdded(text, key) {
     text,
     key
   }
-}
+};
 
 function loginError(error) {
   return {

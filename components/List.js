@@ -8,7 +8,7 @@ export default class List extends Component {
   };
 
   renderList() {
-    const {list, deleteTodo, changeTodoStatus} = this.props;
+    const {list, deleteTodo, changeTodoStatus, insertTodo, changeTodoPosition} = this.props;
 
     return Object.keys(list).reverse().map((key, i) => {
       return (
@@ -17,6 +17,7 @@ export default class List extends Component {
           storeKey={key}
           todo={list[key]}
           changeTodoStatus={changeTodoStatus}
+          changeTodoPosition={changeTodoPosition}
           deleteTodo={deleteTodo} />
         );
     });
