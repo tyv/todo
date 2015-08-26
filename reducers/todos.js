@@ -28,7 +28,8 @@ export default function todos(state = initialState, action) {
 
     case types.ADD_TODO:
       newState.list[action.key] = {
-        text: action.text,
+        text: action.todo.text,
+        position: action.todo.position,
         done: false
       };
       return newState;
@@ -47,6 +48,10 @@ export default function todos(state = initialState, action) {
           .forEach(key => {
             newState.list[key].done = action.status;
           });
+      return newState;
+
+    case types.CHANGE_TODO_POSITION:
+      newState.list = action.list;
       return newState;
 
     case types.LOGOUT:

@@ -28,7 +28,7 @@ export default class Todo extends Component {
     e.stopPropagation();
 
     e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text', JSON.stringify({ target: this.props.storeKey }));
+    e.dataTransfer.setData('text', JSON.stringify({target: this.props.storeKey}));
 
     this.setState({ drag: true });
   }
@@ -42,9 +42,12 @@ export default class Todo extends Component {
   }
 
   onDrop(e) {
-    if (!this.state.drag) {
 
-      let direction = this.state.dragDirection;
+    let direction = this.state.dragDirection;
+
+    if (!this.state.drag && direction) {
+
+      let newPosition;
       let target = JSON.parse(e.nativeEvent.dataTransfer.getData('text')).target;
 
       this.setState({
@@ -53,7 +56,9 @@ export default class Todo extends Component {
         dragDirection: undefined
       });
 
-      this.props.changeTodoPosition(target, direction, this.props.storeKey)
+      if (direction === 'after') newPosition = this.props.position - 0.5;
+      if (direction === 'before') newPosition = this.props.position + 0.5;
+      this.props.changeTodoPosition(target, newPosition);
     }
   }
 

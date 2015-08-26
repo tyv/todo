@@ -2,6 +2,8 @@ import * as types from '../constants/ActionTypes';
 import * as messages from '../constants/Messages';
 import firebase from '../utils/Firebase';
 
+let defaultPosition = 0;
+
 export function login() {
     return dispatch => {
         firebase.authWithOAuthPopup('facebook', (e, payload) => {
@@ -26,19 +28,14 @@ export function getListByUser(user) {
     return dispatch => {
       dispatch(setLoading());
 
-      let users = firebase.child('users');
+      let users = firebase.child('users/' + user);
+
       users.once('value', dataSnapshot => {
-          const val = dataSnapshot.val();
-          if (val && val[user]) { // TODO: dispatch(val ? funca(..) : funcb(..))
-              dispatch(onUserTodoList(val[user]));
-          } else {
-              users.set(
-                {
-                    [user]: {}
-                },
-                () => dispatch(onUserTodoList())
-              );
-          }
+        dataSnapshot.forEach(todo => {
+          const position = todo.val().position;
+          defaultPosition = position > defaultPosition ? position : defaultPosition;
+        });
+        dispatch(onUserTodoList(dataSnapshot.val()));
       });
     };
 };
@@ -51,6 +48,7 @@ export function addTodo(text, uid) {
       let push = user.push(
         {
           text,
+          position: ++defaultPosition,
           done: false
         },
         (e) => {
@@ -70,7 +68,11 @@ export function deleteTodo(key) {
     dispatch(setLoading());
     firebase
       .child('users/' + firebase.getAuth().uid + '/' + key)
-      .remove(() => dispatch(onTodoDeleted(key)));
+      .remove(e => {
+        if (!e) {
+          dispatch(onTodoDeleted(key))
+        }
+      });
   };
 }
 
@@ -104,110 +106,87 @@ export function changeTodosStatus(status) {
   }
 };
 
-export function changeTodoPosition(sourceTodoId, direction, targetTodoId) {
+export function changeTodoPosition(target, newPosition) {
 
   return dispatch => {
+    //dispatch(setLoading());
+
     const todosRef = firebase.child('users/' + firebase.getAuth().uid);
 
-    let linkedList = {};
+    let arr = [];
+    let targetObj;
 
-    todosRef.once('value', todos => {
-      let prev = null;
-      todos.forEach(
-        todo => {
-          let key = todo.key();
+    todosRef.once('value', dataSnapshot => {
 
-          if (!linkedList.start) linkedList.start = key;
-
-          // Creating Doubly-linked list https://en.wikipedia.org/wiki/Doubly-linked_list
-          linkedList[key] = {...todo.val(), key: key, before: prev, after: null};
-          if (prev) prev.after = linkedList[key];
-          prev = linkedList[key];
-        }
-      );
-
-      let item = linkedList[linkedList.start];
-
-      let source = linkedList[sourceTodoId];
-      let target = linkedList[targetTodoId][direction];
-
-      let next;
-      let proceed = false;
-      let newList = {};
-      let foundTarget = false;
-      let listDiredtion = 'after';
-
-      while (item) {
-
-        if (proceed) {
-
-          if (item[listDiredtion]) {
-            next = { text: item[listDiredtion].text, done: item[listDiredtion].done };
-            item[listDiredtion].text = item.text;
-            item[listDiredtion].done = item.done;
-            item.text = next.text;
-            item.done = next.done;
-          }
-
-          item = item[listDiredtion];
-          continue;
-
-        } else {
-
-          if (item === target) {
-            if (foundTarget) {
-
-              if (item[listDiredtion]) {
-                next = { text: item[listDiredtion].text, done: item[listDiredtion].done };
-                item[listDiredtion].text = item.text;
-                item[listDiredtion].done = item.done;
-                item.text = next.text;
-                item.done = next.done;
-              }
-              proceed = true;
-            }
-
-            foundTarget = true;
-            item = item[listDiredtion];
-            continue;
-          }
-
-          if (item === source) {
-            if (foundTarget) listDiredtion = 'before';
-            if (item[listDiredtion]) {
-              next = { text: item[listDiredtion].text, done: item[listDiredtion].done };
-              item[listDiredtion].text = item.text;
-              item[listDiredtion].done = item.done;
-              item.text = next.text;
-              item.done = next.done;
-            }
-            item = item[listDiredtion];
-            proceed = true;
-            continue;
-          }
-        }
-
-        item = item[listDiredtion];
-      }
-
-      item = linkedList[linkedList.start];
-
-      while (item) {
-        newList[item.key] = { text: item.text, done: item.done };
-        item = item.after;
-      }
-
-      todosRef.update(newList, (e) => {
-        console.log('complete:', e);
+      dataSnapshot.forEach(todo => {
+        const todoWithKey = {...todo.val(), key: todo.key()};
+        arr.push(todoWithKey);
+        if (target === todoWithKey.key) targetObj = todoWithKey;
       });
-      // // let savedTarget = linkedList[targetTodoId][direction];
-      // linkedList[targetTodoId][direction] = linkedList[sourceTodoId];
 
+      arr
+        .sort((a, b) => parseFloat(b.position) - parseFloat(a.position));
 
-      // dispatch(setLoading());
-      // todosRef.update(todosUpdated, () => dispatch(onTodosStatusChanges(status)));
+      let newarr;
+      let found = false;
+
+      if (newPosition > arr[0].position) {
+        arr.splice(arr.indexOf(targetObj), 1);
+        newarr = [targetObj, ...arr];
+
+      }
+
+      if (newPosition < arr[arr.length - 1].position) {
+        arr.splice(arr.indexOf(targetObj), 1);
+        newarr = [...arr, targetObj];
+      }
+
+      if (!newarr) {
+
+        newarr = [];
+
+        arr.reduce(
+          (prev, cur) => {
+
+            if (target !== cur.key) {
+              newarr.push(cur);
+              if (newPosition < cur.position) {
+                newarr.push(targetObj);
+              }
+            }
+
+            return cur;
+
+          },
+          arr[0]
+        );
+      }
+
+      let newList = {};
+      let index = newarr.length;
+
+      newarr.forEach((todo) => {
+        const {text, done} = todo;
+
+        newList[todo.key] = {
+          text,
+          done,
+          position: index--
+        }
+      });
+
+      todosRef.update(newList);
+      todosRef.once('value', dataSnapshot => dispatch(onChahgeTodoPosition(dataSnapshot.val())))
+
     });
-  }
+  };
+};
+
+function onChahgeTodoPosition(list) {
+  return {
+    type: types.CHANGE_TODO_POSITION,
+    list
+  };
 };
 
 function onTodoStatusChanges(key, status) {
@@ -232,10 +211,10 @@ function onTodoDeleted(key) {
   }
 };
 
-function onTodoAdded(text, key) {
+function onTodoAdded(todo, key) {
   return {
     type: types.ADD_TODO,
-    text,
+    todo,
     key
   }
 };
@@ -263,7 +242,7 @@ function onLogout() {
 function onUserTodoList(data) {
   return {
     type: types.USER_TODOS,
-    data
+    data: data || {}
   };
 };
 
