@@ -4,7 +4,6 @@ import SOCIAL_LOGINS from '../constants/SocialLogins';
 export default class Login extends Component {
 
   onLogingClick(type) {
-    console.log(type);
     this.props.login(type)
   }
 

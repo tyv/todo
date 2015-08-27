@@ -31,9 +31,10 @@ export default class Add extends Component {
         <div className='add__col'>
           <input
             className='add__input custom-input custom-input_type_text'
-            placeholder='placeholder' //TODO: props
+            placeholder='Add todo'
             onChange={::this.onChange}
-            value={this.state.text} />
+            value={this.state.text}
+            autoFocus={true}/>
         </div>
         <div className='add__col'>
           <button
