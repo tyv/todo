@@ -1,1 +1,1 @@
-const LOGIN_ERROR = 'Login error';
+export const LOGIN_ERROR = 'Login error';

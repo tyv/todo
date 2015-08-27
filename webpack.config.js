@@ -18,7 +18,7 @@ module.exports = {
     new webpack.NoErrorsPlugin()
   ],
   resolve: {
-    extensions: ['', '.js', '.styl'],
+    extensions: ['', '.js', '.styl', '.woff'],
   },
   module: {
     loaders: [{
@@ -40,6 +40,8 @@ module.exports = {
           'css',
           'autoprefixer?browsers=last 2 version'
         ]
-    }]
+    },
+    { test: /\.woff$/, loader: "url-loader?limit=10000&minetype=application/font-woff" }
+    ]
   }
 };

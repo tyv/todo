@@ -4,9 +4,9 @@ import firebase from '../utils/Firebase';
 
 let defaultPosition = 0;
 
-export function login() {
+export function login(type) {
     return dispatch => {
-        firebase.authWithOAuthPopup('facebook', (e, payload) => {
+        firebase.authWithOAuthPopup(type, (e, payload) => {
               if (e) {
                 dispatch(loginError(e));
               } else {
@@ -109,7 +109,8 @@ export function changeTodosStatus(status) {
 export function changeTodoPosition(target, newPosition) {
 
   return dispatch => {
-    //dispatch(setLoading());
+
+    dispatch(setLoading());
 
     const todosRef = firebase.child('users/' + firebase.getAuth().uid);
 
