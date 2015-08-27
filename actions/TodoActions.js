@@ -31,10 +31,7 @@ export function getListByUser(user) {
       let users = firebase.child('users/' + user);
 
       users.once('value', dataSnapshot => {
-        dataSnapshot.forEach(todo => {
-          const position = todo.val().position;
-          defaultPosition = position > defaultPosition ? position : defaultPosition;
-        });
+        defaultPosition = dataSnapshot.numChildren(); // Save position in closure
         dispatch(onUserTodoList(dataSnapshot.val()));
       });
     };
@@ -114,59 +111,32 @@ export function changeTodoPosition(target, newPosition) {
 
     const todosRef = firebase.child('users/' + firebase.getAuth().uid);
 
-    let arr = [];
+    let todosAsArray = [];
     let targetObj;
 
     todosRef.once('value', dataSnapshot => {
 
       dataSnapshot.forEach(todo => {
         const todoWithKey = {...todo.val(), key: todo.key()};
-        arr.push(todoWithKey);
+        todosAsArray.push(todoWithKey);
         if (target === todoWithKey.key) targetObj = todoWithKey;
+
       });
 
-      arr
-        .sort((a, b) => parseFloat(b.position) - parseFloat(a.position));
+      todosAsArray.sort((a, b) => parseFloat(b.position) - parseFloat(a.position));
 
-      let newarr;
-      let found = false;
-
-      if (newPosition > arr[0].position) {
-        arr.splice(arr.indexOf(targetObj), 1);
-        newarr = [targetObj, ...arr];
-
-      }
-
-      if (newPosition < arr[arr.length - 1].position) {
-        arr.splice(arr.indexOf(targetObj), 1);
-        newarr = [...arr, targetObj];
-      }
-
-      if (!newarr) {
-
-        newarr = [];
-
-        arr.reduce(
-          (prev, cur) => {
-
-            if (target !== cur.key) {
-              newarr.push(cur);
-              if (newPosition < cur.position) {
-                newarr.push(targetObj);
-              }
-            }
-
-            return cur;
-
-          },
-          arr[0]
-        );
-      }
+      let organizedTodos = getOrganizedTodos(
+                              newPosition,
+                              [...todosAsArray],
+                              targetObj
+                            );
 
       let newList = {};
-      let index = newarr.length;
+      let index = organizedTodos.length;
 
-      newarr.forEach((todo) => {
+      defaultPosition = index; // Save position in closure
+
+      organizedTodos.forEach((todo) => {
         const {text, done} = todo;
 
         newList[todo.key] = {
@@ -176,11 +146,42 @@ export function changeTodoPosition(target, newPosition) {
         }
       });
 
-      todosRef.update(newList);
-      todosRef.once('value', dataSnapshot => dispatch(onChahgeTodoPosition(dataSnapshot.val())))
-
+      dispatch(onChahgeTodoPosition(newList));
+      todosRef.update(newList, e => {
+        if (e) console.log(e); // TODO: hadle error
+      });
     });
   };
+};
+
+function getOrganizedTodos(newPosition, todosAsArray, targetObj) {
+
+  let organizedTodos;
+
+  let needInsertBefore = newPosition > todosAsArray[0].position;
+  let needInsertAfter = !needInsertBefore && (newPosition > todosAsArray[0].position);
+
+  if (needInsertBefore || needInsertAfter) {
+
+    todosAsArray.splice(todosAsArray.indexOf(targetObj), 1);
+
+    organizedTodos = needInsertBefore ?
+                      [targetObj, ...todosAsArray] :
+                      [...todosAsArray, targetObj];
+  } else {
+
+    organizedTodos = [];
+
+    todosAsArray.forEach(todo => {
+      if (targetObj.key !== todo.key) {
+        organizedTodos.push(todo);
+        if (newPosition < todo.position) organizedTodos.push(targetObj);
+      }
+    });
+  }
+
+  return organizedTodos;
+
 };
 
 function onChahgeTodoPosition(list) {

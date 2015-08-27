@@ -36,14 +36,15 @@ class TodoApp extends Component {
   renderApp() {
     const {logged, todos} = this.props;
     const list = todos.list;
+    const isLoading = todos.loading;
     const actions = this.actions;
     const name = logged.status[logged.status.provider].displayName;
 
     return (
-      <div className={'todoapp' + (todos.loading ? ' todoapp_loading' : '')}>
+      <div className={'todoapp' + (isLoading ? ' todoapp_loading' : '')}>
         <Header name={name} {...actions} />
-        <Add uid={logged.status.uid} {...actions} />
-        {todos.loading && this.renderLoading()}
+        <Add uid={logged.status.uid} loading={isLoading} {...actions} />
+        {isLoading && this.renderLoading()}
         {Boolean(Object.keys(list).length) && this.renderList()}
         <Footer list={list} {...actions} />
       </div>

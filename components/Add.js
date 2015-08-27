@@ -20,7 +20,7 @@ export default class Add extends Component {
   }
 
   onChange(e) {
-    this.setState({ text: e.target.value });
+    if (!this.props.loading) this.setState({ text: e.target.value });
   }
 
   render() {
@@ -34,7 +34,7 @@ export default class Add extends Component {
             placeholder='Add todo'
             onChange={::this.onChange}
             value={this.state.text}
-            autoFocus={true}/>
+            autoFocus={true} />
         </div>
         <div className='add__col'>
           <button
