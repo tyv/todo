@@ -3,8 +3,7 @@
         position relative
 
     &__item_drag &__text
-        background #060 !important
-
+        background #eee !important
 
     &__item_drag-before:before,
     &__item_drag-after:after
@@ -18,7 +17,7 @@
         content ''
         pointer-events none
 
-        background red
+        background #999
 
     &__item_drag-before:before
         top -1px
@@ -32,7 +31,11 @@
     &__text
         display block
 
-        padding 15px 20px
+        white-space nowrap
+        overflow hidden
+        text-overflow ellipsis
+
+        padding 15px 45px 15px 20px
 
     &__cbox:checked + &__text
         color #999
@@ -41,9 +44,12 @@
     &__delete
         position absolute
         top 50%
-        right 45px
+        right 25px
 
-        margin-top -8px
+        height 20px
+        line-height 20px
+
+        margin-top -10px
 
         opacity 0
         transition opacity 0.3s ease-in
@@ -51,7 +57,7 @@
     &__delete:after
         font-size 18px
 
-        line-height 0
+        line-height 20px
 
         color #bfbbbb
 
