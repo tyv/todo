@@ -1,5 +1,5 @@
 import React from 'react';
-import App from './containers/App';
+import App from './components/app/App';
 
 React.render(
   <App />,
