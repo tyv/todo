@@ -3,6 +3,10 @@ import SOCIAL_LOGINS from '../../constants/SocialLogins';
 
 export default class Login extends Component {
 
+  static propTypes = {
+    login: PropTypes.func.isRequired
+  };
+
   onLogingClick(type) {
     this.props.login(type)
   }

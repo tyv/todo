@@ -4,11 +4,14 @@ import Todo from '../todo/Todo';
 export default class List extends Component {
 
   static propTypes = {
-
+    list: PropTypes.object.isRequired,
+    deleteTodo: PropTypes.func.isRequired,
+    changeTodoStatus: PropTypes.func.isRequired,
+    changeTodoPosition: PropTypes.func.isRequired
   };
 
   renderList() {
-    const {list, deleteTodo, changeTodoStatus, insertTodo, changeTodoPosition} = this.props;
+    const {list, deleteTodo, changeTodoStatus, changeTodoPosition} = this.props;
     const todos = [];
 
     Object.keys(list).forEach((key, i) => {

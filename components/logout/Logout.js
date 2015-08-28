@@ -1,6 +1,10 @@
-import React, { Component } from 'react';
+import React, { PropTypes, Component } from 'react';
 
 export default class Logout extends Component {
+
+  static propTypes = {
+    logout: PropTypes.func.isRequired
+  };
 
   onLogoutClick() {
     this.props.logout();

@@ -10,7 +10,9 @@ export default class Add extends Component {
   }
 
   static propTypes = {
-
+    uid: PropTypes.string.isRequired,
+    loading: PropTypes.bool.isRequired,
+    addTodo: PropTypes.func.isRequired
   }
 
   onAdd(e) {

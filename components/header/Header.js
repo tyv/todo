@@ -3,7 +3,8 @@ import Logout from '../logout/Logout';
 
 export default class Header extends Component {
   static propTypes = {
-
+    name: PropTypes.string.isRequired,
+    logout: PropTypes.func.isRequired
   };
 
   render() {

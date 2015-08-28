@@ -3,7 +3,8 @@ import React, { PropTypes, Component } from 'react';
 export default class Footer extends Component {
 
   static propTypes = {
-
+    changeTodosStatus: PropTypes.func.isRequired,
+    list: PropTypes.object.isRequired
   };
 
   onSelectControlClick(undone) {

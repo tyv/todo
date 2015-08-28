@@ -12,6 +12,11 @@ export default class Todo extends Component {
   }
 
   static propTypes = {
+    deleteTodo: PropTypes.func.isRequired,
+    storeKey: PropTypes.string.isRequired,
+    todo: PropTypes.object.isRequired,
+    changeTodoStatus: PropTypes.func.isRequired,
+    position: PropTypes.number.isRequired
 
   };
 
@@ -107,9 +112,9 @@ export default class Todo extends Component {
   }
 
   render() {
-    const {todo, key, storeKey} = this.props;
+    const {todo, storeKey} = this.props;
 
-    return ( // TODO: fix <label for="..">
+    return (
       <li
         className={::this.getClassName()}
         onDragStart={::this.onDragStart}
