@@ -1,0 +1,77 @@
+.todos
+    &__item
+        position relative
+
+    &__item_drag &__text
+        background #eee !important
+
+    &__item_drag-before:before,
+    &__item_drag-after:after
+        position absolute
+        left 0
+        z-index 1
+
+        width 100%
+        height 2px
+
+        content ''
+        pointer-events none
+
+        background #999
+
+    &__item_drag-before:before
+        top -1px
+
+    &__item_drag-after:after
+        bottom -1px
+
+    &__item:nth-child(odd) &__text
+        background #F4F7FA
+
+    &__text
+        display block
+
+        white-space nowrap
+        overflow hidden
+        text-overflow ellipsis
+
+        padding 15px 45px 15px 20px
+
+        color #333
+
+    &__cbox:checked + &__text
+        color #999
+        text-decoration line-through
+
+    &__delete
+        position absolute
+        top 50%
+        right 25px
+
+        height 20px
+        line-height 20px
+
+        margin-top -10px
+
+        cursor pointer
+
+        opacity 0
+        transition opacity 0.3s ease-in
+
+    &__delete:after
+        font-size 18px
+
+        line-height 20px
+
+        color #bfbbbb
+
+        transition 0.3s color
+
+        content '×'
+
+    &__delete:hover:after
+        color #c90612
+
+    &__item:hover &__delete,
+    &__item:hover .drag
+        opacity 1
