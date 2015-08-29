@@ -41,9 +41,13 @@ button:focus
 
     transition color 0.2s ease-in
 
-:link:hover,
-:visited:hover,
-.pseudo-link:hover
-    color #bc2020 !important
+@media normal
+    :link:hover,
+    :visited:hover,
+    .pseudo-link:hover
+        color #bc2020 !important
 
 
+@media small
+    body
+        padding 0
